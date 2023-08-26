@@ -1,0 +1,17 @@
+{
+  "name": "monorepo_tamplate",
+  "scripts": {
+    "start": "lerna run start --stream",
+    "build": "lerna run build --stream",
+    "test": "lerna run test",
+    "server": "lerna run start --scope=server",
+    "client": "lerna run start --scope=client"
+  },
+  "private": true,
+  "workspaces": [
+    "projects/*"
+  ],
+  "devDependencies": {
+    "lerna": "^6.5.1"
+  }
+}
