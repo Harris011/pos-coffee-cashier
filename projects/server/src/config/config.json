@@ -1,8 +1,8 @@
 {
   "development": {
-    "username": "root",
-    "password": null,
-    "database": "database_development",
+    "username": "harris",
+    "password": "HA92RRis12sql2",
+    "database": "coffee_cashier_shop",
     "host": "127.0.0.1",
     "dialect": "mysql"
   },
