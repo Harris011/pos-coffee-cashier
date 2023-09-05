@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import {
     Box,
-    Button,
     Flex,
     Icon,
     Link,
-    Text,
     Divider,
     IconButton,
     Tooltip,
@@ -52,7 +50,7 @@ function SideBar() {
                 flexDir={'column'}
                 justifyContent={'space-between'}
                 h={'100vh'}
-                py={'4'}
+                py={'3'}
             >
                 <Flex
                     flexDir={'column'}
@@ -76,7 +74,7 @@ function SideBar() {
                             w={'55px'}
                         >
                             <Divider
-                                my={'2'}
+                                my={'1.5'}
                                 colorScheme={'whiteAlpha'}
                             />
                         </Box>
@@ -114,7 +112,7 @@ function SideBar() {
                             </Skeleton>
                         </Link>
                         <Link
-                            onClick={() => navigate('/dashboard')}
+                            onClick={() => navigate('/products')}
                         >
                             <Skeleton
                                 isLoaded={isLoaded}
@@ -219,7 +217,7 @@ function SideBar() {
                 <Flex
                     alignItems={'center'}
                     flexDir={'column'}
-                    mb={'4'}
+                    mb={'5'}
                 >
                     <Box
                         w={'55px'}

@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import { loginAction } from './Reducers/authUser';
 import { useEffect } from 'react';
+import ProductsManagement from './pages/ProductsManagement';
 
 function App() {
   const dispatch = useDispatch();
@@ -60,6 +61,7 @@ function App() {
                 <Routes>
                   {/* <Route path='/' element={<Login/>} /> */}
                   <Route path='/dashboard' element={<DashBoard/>} />
+                  <Route path='/products' element={<ProductsManagement/>} />
                 </Routes>
               </Box>
             </Flex>
