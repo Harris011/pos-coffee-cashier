@@ -16,7 +16,10 @@ import {
     Tbody,
     Input,
     InputGroup,
-    InputLeftElement
+    InputLeftElement,
+    InputRightElement,
+    Select,
+    InputRightAddon
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import axios from 'axios';
@@ -34,6 +37,8 @@ function ProductsManagement() {
     const [sortby, setSortby] = useState('name');
     const [order, setOrder] = useState('ASC');
     const [name, setName] = useState('');
+    const [category, setCategory] = useState('');
+    const [selectedOption, setSelectedOption] = useState('name');
     const [productList, setProductList] = useState([]);
     const [totalData, setTotalData] = useState(0);
     const [activeComponent, setActiveComponent] = useState('none');
@@ -42,7 +47,7 @@ function ProductsManagement() {
 
     let getProduct = async () => {
         try {
-            let response = await axios.get(`http://localhost:8000/api/product/list?page=${page}&size=${size}&sortby=${sortby}&order=${order}&name=${name}`, {
+            let response = await axios.get(`http://localhost:8000/api/product/list?page=${page}&size=${size}&sortby=${sortby}&order=${order}&name=${name}&category=${category}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -56,7 +61,7 @@ function ProductsManagement() {
 
     useEffect(() => {
         getProduct();
-    }, [page, size, sortby, order]);
+    }, [page, size, sortby, order, name, category, selectedOption]);
 
     const printProduct = () => {
         return productList.map((val, idx) => {
@@ -142,6 +147,7 @@ function ProductsManagement() {
     const handleCloseComponent = () => {
         setActiveComponent('none');
     }
+
 
     useEffect(() => {
         const delay = setTimeout(() => {
@@ -250,11 +256,39 @@ function ProductsManagement() {
                                                 />
                                             </InputLeftElement>
                                             <Input
-                                                placeholder={'Search Product'}
+                                                placeholder={'Search by'}
                                                 letterSpacing={'tight'}
                                                 variant={'filled'}
                                                 type={'search'}
+                                                value={selectedOption === 'category' ? category : name}
+                                                onChange={(e) => {
+                                                  if (selectedOption === 'category') {
+                                                      setCategory(e.target.value);
+                                                } else {
+                                                      setName(e.target.value);
+                                                  }
+                                                }}
                                             />
+                                            <InputRightAddon>
+                                                <Select
+                                                    size={'xs'}
+                                                    variant={'unstyled'}
+                                                    color={'black'}
+                                                    w={'100%'}
+                                                    onChange={(e) => setSelectedOption(e.target.value)}
+                                                >
+                                                    <option
+                                                        value={'name'}
+                                                    >
+                                                        Product
+                                                    </option>
+                                                    <option
+                                                        value={'category'}
+                                                    >
+                                                        Category
+                                                    </option>
+                                                </Select>
+                                            </InputRightAddon>
                                         </InputGroup>
                                     </Box>
                                 </Skeleton>
