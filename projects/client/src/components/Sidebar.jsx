@@ -4,7 +4,6 @@ import {
     Flex,
     Icon,
     Link,
-    Divider,
     IconButton,
     Tooltip,
     Skeleton
@@ -48,17 +47,19 @@ function SideBar() {
         >
             <Flex
                 flexDir={'column'}
-                justifyContent={'space-between'}
                 h={'100vh'}
-                py={'3'}
             >
                 <Flex
                     flexDir={'column'}
                 >
                     {/* Logo */}
                     <Flex
+                        justifyContent={'center'}
                         alignItems={'center'}
-                        flexDir={'column'}
+                        h={'8vh'}
+                        borderBottom={'1px'}
+                        borderColor={'white'}
+                        mx={'2'}
                     >
                         <Skeleton
                             isLoaded={isLoaded}
@@ -70,21 +71,14 @@ function SideBar() {
                                 color={'white'}
                             />
                         </Skeleton>
-                        <Box
-                            w={'55px'}
-                        >
-                            <Divider
-                                my={'1.5'}
-                                colorScheme={'whiteAlpha'}
-                            />
-                        </Box>
                     </Flex>
                     {/* Menu */}
                     <Flex
                         flexDir={'column'}
-                        gap={'3'}
-                        justifyContent={'center'}
+                        gap={'1.5'}
                         alignItems={'center'}
+                        h={'82vh'}
+                        pt={'2'}
                     >
                         <Link
                             onClick={() => navigate('/dashboard')}
@@ -216,17 +210,13 @@ function SideBar() {
                 {/* Footer */}
                 <Flex
                     alignItems={'center'}
-                    flexDir={'column'}
-                    mb={'5'}
+                    h={'10vh'}
+                    justifyContent={'center'}
+                    borderTop={'1px'}
+                    borderColor={'white'}
+                    mb={'1'}
+                    mx={'2'}
                 >
-                    <Box
-                        w={'55px'}
-                    >
-                        <Divider
-                            my={'4'}
-                            colorScheme={'whiteAlpha'}
-                        />  
-                    </Box>
                     <Skeleton
                         isLoaded={isLoaded}
                         fitContent='true'
