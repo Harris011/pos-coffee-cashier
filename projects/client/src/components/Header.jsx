@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Box,
     Text,
@@ -9,85 +9,176 @@ import {
     InputLeftAddon,
     IconButton,
     InputLeftElement,
-    Button
+    Button,
+    Menu,
+    MenuButton,
+    MenuList,
+    MenuItem
 } from '@chakra-ui/react';
-// import { loginAction } from '../Reducers/authUser';
 import { useSelector } from 'react-redux';
 import { BsSearch } from 'react-icons/bs';
 import { BiFilterAlt } from 'react-icons/bi';
 
-function Header() {
+function Header(props) {
     const name = useSelector((state) => state.authUser.username);
     const role = useSelector((state => state.authUser.role));
+    const [isLoaded, setIsLoaded] = useState(false);
+    const [searchProduct, setSearchProduct] = useState('');
+    const [sortPorduct, setSortProduct] = useState('name');
+    const [orderProduct, setOrderProduct] = useState('ASC');
 
-    console.log("user that login:", name);
-    console.log("role user that login:", role);
+    const handleInput = (e) => {
+        const name = e.target.value;
+        setSearchProduct(name);
+        props.onSearch(name)
+    }
+
+    const handleSortOrder = (sortValue, orderValue) => {
+        setSortProduct(sortValue);
+        setOrderProduct(orderValue);
+        props.onSortOrder(sortValue, orderValue);
+    }
+
+    useEffect(() => {
+        const delay = setTimeout(() => {
+            setIsLoaded(true)
+        }, 2000)
+
+        return () => {
+            clearTimeout(delay);
+        }
+    }, []);
 
     return ( 
         <Box
-            // bg={'royalblue'}
             w={'100%'}
+            h={'8vh'}
         >
             <Flex
                 justifyContent={'space-between'}
                 alignItems={'center'}
-                pt={'3'}
-                mx={'4'}
+                h={'8vh'}
             >
                 <Flex
                     flexDir={'column'}
                     alignItems={'start'}
                 >
-                    <Text
-                        fontWeight={'semibold'}
-                        fontSize={'xl'}
+                    <Skeleton
+                        isLoaded={isLoaded}
                     >
-                        Welcome, {name}
-                    </Text>
-                    <Text
-                        fontWeight={'light'}
-                        fontSize={'sm'}
-                        color={'gray.700'}
-                        mt={'-1'}
+                        <Text
+                            fontWeight={'semibold'}
+                            fontSize={'xl'}
+                        >
+                            Welcome, {name}
+                        </Text>
+                    </Skeleton>
+                    <Skeleton
+                        isLoaded={isLoaded}
                     >
-                        {role}
-                    </Text>
+                        <Text
+                            fontWeight={'light'}
+                            fontSize={'sm'}
+                            color={'gray.700'}
+                            mt={'-1'}
+                        >
+                            {role}
+                        </Text>
+                    </Skeleton>
                 </Flex>
                 <Flex
-                    justifyContent={'space-around'}
-                    w={'50%'}
+                    gap={'6'}
                 >
-                    <Box
-                        w={'80%'}
+                    <Skeleton
+                        isLoaded={isLoaded}
                     >
-                        <InputGroup
-                            size={'sm'}
-                        >
-                            <InputLeftElement>
-                                <IconButton
-                                    icon={<BsSearch/>}
+                        <Box>
+                            <InputGroup
+                                size={'sm'}
+                            >
+                                <InputLeftElement>
+                                    <IconButton
+                                        icon={<BsSearch/>}
+                                        size={'sm'}
+                                        variant={'link'}
+                                        color={'black'}
+                                    />
+                                </InputLeftElement>
+                                <Input
+                                    placeholder={'Search product'}
                                     size={'sm'}
-                                    variant={'link'}
-                                    color={'black'}
+                                    variant={'filled'}
+                                    type={'search'}
+                                    value={searchProduct}
+                                    onChange={handleInput}
                                 />
-                            </InputLeftElement>
-                            <Input
-                                placeholder={'Search product'}
-                                letterSpacing={'tight'}
-                                // size={'sm'}
-                                variant={'filled'}
-                            />
-                        </InputGroup>
-                    </Box>
-                    <Box
-                        w={'20%'}
+                            </InputGroup>
+                        </Box>
+                    </Skeleton>
+                    <Skeleton
+                        isLoaded={isLoaded}
                     >
-                        <IconButton
-                            icon={<BiFilterAlt size={'20px'}/>}
-                            size={'sm'}
-                            rounded={'sm'}
-                        />
-                    </Box>
+                        <Box>
+                            <Menu
+                                placement={'top-end'}
+                                size={'sm'}
+                            >
+                                <MenuButton>
+                                    <IconButton
+                                        icon={<BiFilterAlt size={'20px'} />}
+                                        size={'sm'}
+                                        rounded={'sm'}
+                                    />
+                                </MenuButton>
+                                <MenuList>
+                                    <MenuItem
+                                        onClick={() => {
+                                            handleSortOrder('name', 'ASC');
+                                        }}
+                                    >
+                                        <Text
+                                            fontSize={'sm'}
+                                        >
+                                            Sort by Name: (A - Z)
+                                        </Text>
+                                    </MenuItem>
+                                    <MenuItem
+                                        onClick={() => {
+                                            handleSortOrder('name', 'DESC');
+                                        }}
+                                    >
+                                        <Text
+                                            fontSize={'sm'}
+                                        >
+                                            Sort by Name: (Z - A)
+                                        </Text>
+                                    </MenuItem>
+                                    <MenuItem
+                                        onClick={() => {
+                                            handleSortOrder('price', 'ASC');
+                                        }}
+                                    >
+                                        <Text
+                                            fontSize={'sm'}
+                                        >
+                                            Sort by Price: (low - high)
+                                        </Text>
+                                    </MenuItem>
+                                    <MenuItem
+                                        onClick={() => {
+                                            handleSortOrder('price', 'DESC');
+                                        }}
+                                    >
+                                        <Text
+                                            fontSize={'sm'}
+                                        >
+                                            Sort by Price: (high - low)
+                                        </Text>
+                                    </MenuItem>
+                                </MenuList>
+                            </Menu>
+                        </Box>
+                    </Skeleton>
                 </Flex>
             </Flex>
         </Box>

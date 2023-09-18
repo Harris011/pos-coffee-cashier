@@ -51,10 +51,8 @@ function Pagination(props) {
             {/* THE PAGE NUMBER*/}
             <Text
                 background={'white'}
-                // bgGradient='linear(to-b, green.500, green.400)'
                 py={'0.5'}
                 px={'3'}
-                // color={'white'}
                 rounded={'lg'}
                 fontSize={'md'}
                 border={'1px'}

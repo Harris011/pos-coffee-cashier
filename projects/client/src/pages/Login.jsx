@@ -18,6 +18,7 @@ import { useNavigate } from 'react-router-dom';
 import SyncLoader from "react-spinners/SyncLoader";
 import { useDispatch } from 'react-redux';
 import { loginAction } from '../Reducers/authUser';
+import login_image from '../asset/login_image.jpg';
 
 function Login() {
     const navigate = useNavigate();
@@ -97,7 +98,6 @@ function Login() {
             alignContent={'center'}
         >
             <Box
-                // bg={'skyblue'}
                 h={'90vh'}
                 w={'75vw'}
                 my={'8'}
@@ -113,7 +113,6 @@ function Login() {
                         justifyContent={'center'}
                         alignContent={'center'}
                         bg={'black'}
-                        // maxH={'100%'}
                         w={'50%'}
                         roundedLeft={'xl'}
                     >
@@ -140,7 +139,6 @@ function Login() {
                                 </FormLabel>
                                 <Input
                                     type='email'
-                                    // color={'white'}
                                     placeholder='Enter your email'
                                     bg={'white'}
                                     onChange={(e) => setEmail(e.target.value)}
@@ -156,8 +154,6 @@ function Login() {
                                 </FormLabel>
                                 <InputGroup>
                                     <Input
-                                        // type='password'
-                                        // color={'white'}
                                         placeholder='Enter your Password'
                                         bg={'white'}
                                         type={visible}
@@ -180,7 +176,6 @@ function Login() {
                                 bg={'white'}
                                 my={'6'}
                                 w={'full'}
-                                // isLoading={false}
                                 isLoading={loading}
                                 spinner={<SyncLoader size={8} color='black'/>}
                                 onClick={onBtnLogin}
@@ -202,15 +197,10 @@ function Login() {
                     <Flex
                         justifyContent={'center'}
                         alignContent={'center'}
-                        // bg={'purple.400'}
-                        // h={'100%'}
                         w={'50%'}
                     >
                         <Image 
-                            // src='https://images.unsplash.com/photo-1606791405792-1004f1718d0c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1887&q=80'
-                            // src='https://images.unsplash.com/photo-1542067953-528621275a71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1854&q=80'
-                            // src='https://images.unsplash.com/photo-1514134583630-250e42c36dbd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1887&q=80'
-                            src='https://images.unsplash.com/photo-1515033669541-edd518741ca2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1887&q=80'
+                            src={login_image}
                             objectFit={'cover'}
                             h={'100%'}
                             w={'100%'}

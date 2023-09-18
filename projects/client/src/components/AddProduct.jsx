@@ -1,23 +1,160 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
     Box,
     Flex,
     FormControl,
     FormLabel,
-    Text,
     Input,
     Image,
-    Switch,
     Button,
     Select,
     IconButton,
     Tooltip,
     Skeleton,
+    useToast,
 } from '@chakra-ui/react';
+import axios from 'axios';
 import { FaUpload } from 'react-icons/fa';
+import default_image from '../asset/default_image.jpg';
+import PulseLoader from "react-spinners/PulseLoader";
 
 function AddProduct(props) {
+    let token = localStorage.getItem('coffee_login');
     const [isLoaded, setIsLoaded] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const toast = useToast();
+    const inputFile = useRef(null);
+    const [name, setName] = useState('');
+    const [price, setPrice] = useState('');
+    const [stock, setStock] = useState('');
+    const [category, setCategory] = useState('');
+    const [productImage, setProductImage] = useState(null);
+
+    const handleClose = () => {
+        setName('');
+        setPrice('');
+        setStock('');
+        setCategory('');
+        setProductImage(null);
+        props.handleCloseComponent();
+    }
+
+    useEffect(() => {
+        inputFile.current = document.createElement('input');
+        inputFile.current.type = 'file';
+        inputFile.current.style.display = 'none';
+        document.body.appendChild(inputFile.current);
+    }, []);
+
+    const onBtnCreate = async () => {
+        try {
+            let formData = new FormData();
+            if (!token) {
+                return toast({
+                    position: 'top',
+                    title: 'Create new product',
+                    description: 'unauthorized access',
+                    duration: 2000,
+                    isClosable: true
+                })
+            }
+            if (name == '' || price == '' || stock == '' || category == '') {
+                return toast({
+                    position: 'top',
+                    title: 'Create new product',
+                    description: 'Please complete all required fields',
+                    status: 'warning',
+                    duration: 2000,
+                    isClosable: true
+                })
+            }
+
+            formData.append(
+                "data",
+                JSON.stringify({
+                    name : name,
+                    price: price,
+                    stock: stock,
+                    category_id: category
+                })
+            );
+
+            if (productImage != null) {
+                formData.append('images', productImage);
+            }
+
+            setLoading(true);
+
+            let response = await axios.post(`http://localhost:8000/api/product/create`, formData, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            if (response.data.success == true) {
+                toast({
+                    position: 'top',
+                    title: 'Create new product',
+                    description: response.data.message,
+                    status: 'success',
+                    duration: 2000,
+                    isClosable: true
+                })
+                setTimeout(() => {
+                    props.onSuccess();
+                    handleClose();
+                }, 1500)
+                setLoading(false);
+            } else {
+                setTimeout(() => {
+                    toast({
+                        position: 'top',
+                        title: 'Create new product',
+                        description: 'Fail to create new product',
+                        status: 'error',
+                        duration: 2000,
+                        isClosable: true
+                    })
+                }, 1500)
+                setLoading(false);
+            }
+        } catch (error) {
+            console.log('Error :',error);
+            setTimeout(() => {
+                toast({
+                    position: 'top',
+                    title: 'Create new product',
+                    description: error.response.data.message,
+                    status: 'error',
+                    duration: 2000,
+                    isClosable: true
+                });
+            }, 1500)
+            setLoading(false);
+        }
+    }
+
+    //  Get Category
+    const [categoryList, setCategoryList] = useState([]);
+
+    const getCategory = async () => {
+        try {
+            let response = await axios.get(`http://localhost:8000/api/category/list`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            setCategoryList(response.data.data);
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+
+    useEffect(() => {
+        getCategory();
+    }, []);
 
     useEffect(() => {
         const delay = setTimeout(() => {
@@ -53,15 +190,18 @@ function AddProduct(props) {
                         position={'relative'}
                         mt={'0.5'}
                         rounded={'md'}
+                        w={{lg:'210px', xl:'250px'}}
+                        h={{lg:'150px', xl:'150px'}}
                     >
                         <Skeleton
                             isLoaded={isLoaded}
+                            rounded={'md'}
                         >
                             <Image
-                                objectFit={'cover'}
-                                w={'230px'}
+                                objectFit={'fill'}
+                                w={'250px'}
                                 h={'150px'}
-                                src='https://images.unsplash.com/photo-1582252852999-5ca546037481?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80'
+                                src={productImage ? URL.createObjectURL(productImage) : default_image}
                                 alt='Product Image'
                                 color={'white'}
                                 rounded={'md'}
@@ -87,12 +227,17 @@ function AddProduct(props) {
                                     size={'xs'}
                                     color={'white'}
                                     bg={'gray.700'}
-                                >
-                                    <input
-                                        type={'file'}
-                                    />
-                                </IconButton>
+                                    onClick={() => inputFile.current.click()}
+                                />
                             </Tooltip>
+                            <Input
+                                type={'file'}
+                                ref={inputFile}
+                                onChange={(e) => {
+                                    setProductImage(e.target.files[0]);
+                                }}
+                                display={'none'}
+                            />
                         </Skeleton>
                     </Box>
                     <Box
@@ -120,6 +265,7 @@ function AddProduct(props) {
                                     bg={'white'}
                                     variant={'outline'}
                                     type='text'
+                                    onChange={(e) => setName(e.target.value)}
                                 />
                             </Skeleton>
                         </FormControl>
@@ -145,10 +291,20 @@ function AddProduct(props) {
                                     variant={'outline'}
                                     color={'black'}
                                     bg={'white'}
+                                    onChange={(e) => {
+                                        setCategory(e.target.value)
+                                    }}
                                 >
-                                    <option>
-                                        category 1
-                                    </option>
+                                    {
+                                        categoryList.map((category) => (
+                                            <option
+                                                key={category.id}
+                                                value={category.id}
+                                            >
+                                                {category?.category}
+                                            </option>
+                                        ))
+                                    }
                                 </Select>
                             </Skeleton>
                         </FormControl>
@@ -174,6 +330,7 @@ function AddProduct(props) {
                                     bg={'white'}
                                     variant={'outline'}
                                     type='number'
+                                    onChange={(e) => setStock(e.target.value)}
                                 />
                             </Skeleton>
                         </FormControl>
@@ -199,51 +356,10 @@ function AddProduct(props) {
                                     bg={'white'}
                                     variant={'outline'}
                                     type='number'
+                                    onChange={(e) => setPrice(e.target.value)}
                                 />
                             </Skeleton>
                         </FormControl>
-                    </Box>
-                    <Box
-                        w={'90%'}
-                    >
-                        <Flex
-                            justifyContent={'start'}
-                            alignItems={'start'}
-                            flexDir={'column'}
-                            gap={'0.5'}
-                        >
-                            <Skeleton
-                                isLoaded={isLoaded}
-                            >
-                                <Text
-                                    color={'white'}
-                                    fontSize={'sm'}
-                                >
-                                    Status
-                                </Text>
-                            </Skeleton>
-                            <Flex
-                                alignItems={'center'}
-                                gap={'4'}
-                            >
-                                <Skeleton
-                                    isLoaded={isLoaded}
-                                >
-                                    <Switch
-                                        colorScheme={'green'}
-                                    />
-                                </Skeleton>
-                                <Skeleton
-                                    isLoaded={isLoaded}
-                                >
-                                    <Text
-                                        color={'green.500'}
-                                    >
-                                        Active
-                                    </Text>
-                                </Skeleton>
-                            </Flex>
-                        </Flex>
                     </Box>
                 </Flex>
                 <Flex
@@ -267,7 +383,10 @@ function AddProduct(props) {
                                     size={'sm'}
                                     colorScheme={'red'}
                                     color={'white'}
-                                    onClick={() => props.handleCloseComponent()}
+                                    onClick={() => {
+                                        props.handleCloseComponent();
+                                        handleClose();
+                                    }}
                                 >
                                     Close
                                 </Button>
@@ -284,6 +403,9 @@ function AddProduct(props) {
                                     size={'sm'}
                                     colorScheme={'green'}
                                     color={'white'}
+                                    isLoading={loading}
+                                    spinner={<PulseLoader size={8} color='white' />}
+                                    onClick={onBtnCreate}
                                 >
                                     Create
                                 </Button>
