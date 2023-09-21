@@ -468,6 +468,7 @@ function ProductsManagement() {
                             justifyContent={'center'}
                             borderBottom={'1px'}
                             h={'74vh'}
+                            position={'relative'}
                         >
                             <Skeleton
                                 isLoaded={isLoaded}
@@ -524,7 +525,22 @@ function ProductsManagement() {
                                             </Tr>
                                         </Thead>
                                         <Tbody>
-                                            {printProduct()}
+                                            {
+                                                totalData ?
+                                                printProduct()
+                                                :
+                                                <Flex
+                                                    position={'absolute'}
+                                                    top={'50%'}
+                                                    left={'50%'}
+                                                    transform={'translate(-50%, -50%)'}
+                                                >
+                                                    <Text>
+                                                        No Products Found
+                                                    </Text>
+                                                </Flex>
+
+                                            }
                                         </Tbody>
                                     </Table>
                                 </TableContainer>

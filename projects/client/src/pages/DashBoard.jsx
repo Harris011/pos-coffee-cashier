@@ -61,7 +61,7 @@ function DashBoard() {
 
     const getCategory = async () => {
         try {
-            let response = await axios.get(`http://localhost:8000/api/category/list`, {
+            let response = await axios.get(`http://localhost:8000/api/category/category-list`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -88,7 +88,6 @@ function DashBoard() {
                     border={'1px'}
                     borderColor={'black'}
                     onClick={() => {
-                        console.log('Category data:', category.id);
                         setCategory(category?.category);
                       }}
                 >
@@ -157,7 +156,7 @@ function DashBoard() {
                                     overflowX={'auto'}
                                     overflowY={'hidden'}
                                     whiteSpace={'nowrap'}
-                                    maxW={category ? '90%' : '100%'}
+                                    maxW={category ? '86%' : '100%'}
                                     scrollBehavior={'smooth'}
                                     sx={{
                                         '::-webkit-scrollbar': {
@@ -170,7 +169,7 @@ function DashBoard() {
                                     {printCategory()}
                                 </Flex>
                                 <Flex
-                                    maxW={category ? '10%' : 'none'}
+                                    maxW={category ? '14%' : 'none'}
                                 >
                                     {category && (
                                         <Button
@@ -181,6 +180,7 @@ function DashBoard() {
                                             letterSpacing={'tight'}
                                             onClick={() => setCategory('')}
                                             ml={'1'}
+                                            maxW={'fit-content'}
                                         >
                                             Clear category
                                         </Button>
@@ -191,6 +191,7 @@ function DashBoard() {
                             h={'76vh'}
                             w={'100%'}
                             py={'1'}
+                            position={'relative'}
                         >
                             <SimpleGrid
                                 columns={'4'}
@@ -199,7 +200,21 @@ function DashBoard() {
                                 minW={'0'}
                                 w={'100%'}
                             >
-                                {printProduct()}
+                                {
+                                    totalData ?
+                                    printProduct()
+                                    :
+                                    <Flex
+                                        position={'absolute'}
+                                        top={'50%'}
+                                        left={'50%'}
+                                        transform={'translate(-50%, -50%)'}
+                                    >
+                                        <Text>
+                                            No Products Found
+                                        </Text>
+                                    </Flex>
+                                }
                             </SimpleGrid>
                         </Flex>
                     </Flex>

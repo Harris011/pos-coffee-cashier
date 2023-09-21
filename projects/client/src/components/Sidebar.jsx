@@ -131,14 +131,14 @@ function SideBar() {
                             </Skeleton>
                         </Link>
                         <Link
-                            onClick={() => navigate('/dashboard')}
+                            onClick={() => navigate('/categories')}
                         >
                             <Skeleton
                                 isLoaded={isLoaded}
                                 fitContent='true'
                             >
                                 <Tooltip
-                                    label={'Categorys'}
+                                    label={'Categories'}
                                     hasArrow
                                     bg={'white'}
                                     color={'black'}

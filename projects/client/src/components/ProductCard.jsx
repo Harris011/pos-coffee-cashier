@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { 
-    Box, 
-    Button, 
+    Box,
     Card, 
     CardBody,
-    CardFooter,
     Flex,
     IconButton,
     Image,
@@ -47,7 +45,6 @@ function ProductCard(props) {
                 >
                     <Image
                         w={'100%'}
-                        // maxW={{ base:'100px', sm: '100px' }}
                         h={'140px'}
                         src={`http://localhost:8000/api${props.image}`}
                         objectFit={'fill'}

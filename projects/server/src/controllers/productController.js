@@ -133,8 +133,6 @@ module.exports = {
                     uuid: {[sequelize.Op.ne]:req.params.uuid}
                 }
             });
-    
-            console.log('Data check product from edit :', checkProduct);
 
             if (checkProduct.length == 0) {
                 const {
@@ -177,8 +175,6 @@ module.exports = {
                     }
                 })
 
-                console.log("Data after edit :", edit);
-
                 res.status(200).send({
                     success: true,
                     message: 'Product change success',
@@ -210,8 +206,6 @@ module.exports = {
                     uuid: req.params.uuid
                 }
             })
-
-            console.log("Data check product from drop :", checkProduct);
 
             if (checkProduct[0].dataValues.isDeleted == false) {
                 await model.product.update({isDeleted: 1}, {

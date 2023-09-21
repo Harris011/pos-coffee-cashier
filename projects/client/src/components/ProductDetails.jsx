@@ -4,10 +4,8 @@ import {
     Flex,
     FormControl,
     FormLabel,
-    Text,
     Input,
     Image,
-    Switch,
     Button,
     Select,
     IconButton,
@@ -32,7 +30,6 @@ function ProductDetails(props) {
     const [productImage, setProductImage] = useState(null);
 
     const handleClose = () => {
-        console.log("handleClose edit product is called");
         setName(props.name);
         setPrice(props.price);
         setStock(props.stock);
@@ -142,7 +139,7 @@ function ProductDetails(props) {
 
     const getCategory = async () => {
         try {
-            let response = await axios.get(`http://localhost:8000/api/category/list`, {
+            let response = await axios.get(`http://localhost:8000/api/category/category-list`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -266,7 +263,9 @@ function ProductDetails(props) {
                                     bg={'white'}
                                     variant={'outline'}
                                     type='text'
-                                    defaultValue={name}
+                                    letterSpacing={'tight'}
+                                    placeholder={`Enter the Product's Name`}
+                                    value={name}
                                     onChange={(e) => setName(e.target.value)}
                                 />
                             </Skeleton>
@@ -331,7 +330,9 @@ function ProductDetails(props) {
                                     bg={'white'}
                                     variant={'outline'}
                                     type='number'
-                                    defaultValue={stock}
+                                    letterSpacing={'tight'}
+                                    placeholder='Product Stock'
+                                    value={stock}
                                     onChange={(e) => setStock(e.target.value)}
                                 />
                             </Skeleton>
@@ -358,7 +359,9 @@ function ProductDetails(props) {
                                     bg={'white'}
                                     variant={'outline'}
                                     type='number'
-                                    defaultValue={price}
+                                    letterSpacing={'tight'}
+                                    placeholder='Product Price'
+                                    value={price}
                                     onChange={(e) => setPrice(e.target.value)}
                                 />
                             </Skeleton>
