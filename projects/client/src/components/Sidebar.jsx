@@ -156,7 +156,7 @@ function SideBar() {
                             </Skeleton>
                         </Link>
                         <Link
-                            onClick={() => navigate('/dashboard')}
+                            onClick={() => navigate('/employee')}
                         >
                             <Skeleton
                                 isLoaded={isLoaded}

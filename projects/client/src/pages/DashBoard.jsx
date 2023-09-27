@@ -90,6 +90,7 @@ function DashBoard() {
                     onClick={() => {
                         setCategory(category?.category);
                       }}
+                    textTransform={'capitalize'}
                 >
                     {category?.category}
                 </Button>

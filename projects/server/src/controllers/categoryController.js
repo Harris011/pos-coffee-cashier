@@ -98,17 +98,26 @@ module.exports = {
                 })
 
                 if (checkCategory.length == 0) {
-                    let edit = await model.category.update({
+                    let updateCategory = await model.category.update({
                         category
                     }, {
                         where: {id}
                     })
+
+                    if (updateCategory == 1) {
+                        res.status(200).send({
+                            success: true,
+                            message: 'Category change success',
+                            data: updateCategory
+                        })
+                    } else {
+                        res.status(200).send({
+                            success: true,
+                            message: 'No Category information changed',
+                            data: updateCategory
+                        })
+                    }
         
-                    res.status(200).send({
-                        success: true,
-                        message: 'Category change success',
-                        data: edit
-                    })
                 } else {
                     res.status(400).send({
                         success: false,
