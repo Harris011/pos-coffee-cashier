@@ -12,6 +12,7 @@ import DashBoard from './pages/DashBoard';
 import ProductsManagement from './pages/ProductsManagement';
 import CategoriesManagement from './pages/CategoriesManagement';
 import EmployeeManagement from './pages/EmployeeManagement';
+import DashBoards from './pages/DashBoards';
 
 function App() {
   const dispatch = useDispatch();
@@ -59,7 +60,7 @@ function App() {
                 w={'94vw'}
               >
                 <Routes>
-                  {/* <Route path='/' element={<Login/>} /> */}
+                  <Route path='/dashboards' element={<DashBoards/>} />
                   <Route path='/dashboard' element={<DashBoard/>} />
                   <Route path='/products' element={<ProductsManagement/>} />
                   <Route path='/categories' element={<CategoriesManagement/>} />

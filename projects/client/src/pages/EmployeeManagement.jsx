@@ -625,7 +625,7 @@ function EmployeeManagement() {
                                             color={'white'}
                                             textAlign={'start'}
                                         >
-                                            Create New Employee
+                                            Create New User
                                         </Text>
                                     </Skeleton>
                                 )

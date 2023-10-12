@@ -24,12 +24,14 @@ app.use('/api', express.static(__dirname + '/public'));
 const userRouter = require('./routers/userRouter');
 const productRouter = require('./routers/productRouter');
 const categoryRouter = require('./routers/categoryRouter');
+const transactionRouter = require('./routers/transactionRouter');
 
 // ===========================
 // NOTE : Add your routes here
 app.use('/api/user', userRouter);
 app.use('/api/product', productRouter);
 app.use('/api/category', categoryRouter);
+app.use('/api/transaction', transactionRouter);
 
 app.get("/api", (req, res) => {
     res.send(`Hello, this is my API`);
