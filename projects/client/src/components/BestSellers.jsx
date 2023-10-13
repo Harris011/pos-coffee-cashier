@@ -41,7 +41,9 @@ function BestSellers() {
     const printProduct = () => {
         return productList.map((val) => {
             return (
-                <Tr>
+                <Tr
+                    key={val.product_id}
+                >
                     <Td
                         whiteSpace={'nowrap'}
                         overflow={'hidden'}
@@ -80,9 +82,13 @@ function BestSellers() {
             <Skeleton
                 isLoaded={isLoaded}
                 rounded={'lg'}
+                h={'100%'}
             >
                 <Flex
                     pt={'1'}
+                    flexDir={'column'}
+                    h={'100%'}
+                    w={'100%'}
                 >
                     <TableContainer
                         w={'100%'}
@@ -107,7 +113,7 @@ function BestSellers() {
                                     </Th>
                                 </Tr>
                             </Thead>
-                            <Box
+                            {/* <Box
                                 h={'55vh'}
                                 overflow={'auto'}
                                 position={'relative'}
@@ -121,7 +127,21 @@ function BestSellers() {
                                 <Tbody>
                                     {printProduct()}
                                 </Tbody>
-                            </Box>
+                            </Box> */}
+                        </Table>
+                    </TableContainer>
+                    <TableContainer
+                        w={'100%'}
+                        style={{ height: '55vh', overflow: 'auto' }}
+                    >
+                        <Table
+                            size={'sm'}
+                            variant={'unstyled'}
+                            maxW={'100%'}
+                        >
+                            <Tbody>
+                                {printProduct()}
+                            </Tbody>
                         </Table>
                     </TableContainer>
                 </Flex>

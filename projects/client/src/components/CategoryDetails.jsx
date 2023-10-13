@@ -122,7 +122,9 @@ function CategoryDetails(props) {
     const printProduct = () => {
         return productList.map((val) => {
             return (
-                <Tr>
+                <Tr
+                    key={val.uuid}
+                >
                     <Td
                         color={'white'}
                         whiteSpace={'nowrap'}
@@ -213,7 +215,11 @@ function CategoryDetails(props) {
                         w={'100%'}
                         pt={'2'}
                     >
-                        <Flex>
+                        <Flex
+                            flexDir={'column'}
+                            h={'70vh'}
+                            w={'100%'}
+                        >
                             <TableContainer
                                 w={'100%'}
                             >
@@ -240,21 +246,20 @@ function CategoryDetails(props) {
                                             </Th>
                                         </Tr>
                                     </Thead>
-                                    <Box
-                                        h={'60vh'}
-                                        overflow={'auto'}
-                                        position={'relative'}
-                                        scrollBehavior={'smooth'}
-                                        sx={{
-                                            '::-webkit-scrollbar': {
-                                                width: '0'
-                                            },
-                                        }}
-                                    >
-                                        <Tbody>
-                                            {printProduct()}
-                                        </Tbody>
-                                    </Box>
+                                </Table>
+                            </TableContainer>
+                            <TableContainer
+                                w={'100%'}
+                                style={{ height: '60vh', overflow: 'auto' }}
+                            >
+                                <Table
+                                    size={'sm'}
+                                    variant={'unstyled'}
+                                    maxW={'100%'}
+                                >
+                                    <Tbody>
+                                        {printProduct()}
+                                    </Tbody>
                                 </Table>
                             </TableContainer>
                         </Flex>

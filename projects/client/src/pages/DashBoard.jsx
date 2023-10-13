@@ -46,6 +46,7 @@ function DashBoard() {
         return productList.map((val) => {
             return (
                 <ProductCard
+                    key={val.uuid}
                     uuid={val.uuid}
                     name={val.name}
                     image={val.product_image}
@@ -80,6 +81,7 @@ function DashBoard() {
         return categoryList.map((category) => (
             <Skeleton
                 isLoaded={isLoaded}
+                key={category.id}
             >
                 <Button
                     key={category.id}
