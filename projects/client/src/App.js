@@ -14,6 +14,7 @@ import CategoriesManagement from './pages/CategoriesManagement';
 import EmployeeManagement from './pages/EmployeeManagement';
 import DashBoards from './pages/DashBoards';
 import PageNotFound from './pages/PageNotFound';
+import Transaction from './pages/Transaction';
 
 function App() {
   const dispatch = useDispatch();
@@ -75,7 +76,7 @@ function App() {
                     roleId === 2 && (
                       <>
                         <Route path='/dashboard' element={<DashBoard/>} />
-                        <Route path='/transaction' element={<DashBoard/>} />
+                        <Route path='/transaction' element={<Transaction/>} />
                       </>
                     )
                   }

@@ -15,6 +15,16 @@ import { BsFillBasket2Fill } from 'react-icons/bs';
 function ProductCard(props) {
     const [isLoaded, setIsLoaded] = useState(false);
 
+    const selectedProduct = () => {
+        props.onSelectedProduct({
+          id: props.id,
+          name: props.name,
+          image: props.image,
+          stock: props.stock,
+          price: props.price
+        });
+    }
+
     useEffect(() => {
         const delay = setTimeout(() => {
             setIsLoaded(true)
@@ -49,7 +59,6 @@ function ProductCard(props) {
                         src={`http://localhost:8000/api${props.image}`}
                         objectFit={'fill'}
                         alt='Product Image'
-                        // color={'white'}
                         roundedTop={'md'}
                     />
                     <Tooltip
@@ -69,6 +78,8 @@ function ProductCard(props) {
                             right={'1'}
                             colorScheme={'blackAlpha'}
                             color={'white'}
+                            display={props.stock === 0 ? 'none' : 'flex'}
+                            onClick={selectedProduct}
                         />
                     </Tooltip>
                 </Box>

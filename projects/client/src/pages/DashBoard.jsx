@@ -5,15 +5,20 @@ import {
     Flex,
     Text,
     SimpleGrid,
-    Skeleton
+    Skeleton,
+    useToast
 } from '@chakra-ui/react';
 import Header from '../components/Header';
 import axios from 'axios';
 import Pagination from '../components/Pagination';
 import ProductCard from '../components/ProductCard';
+import Order from '../components/Order';
+import { useDispatch, useSelector } from 'react-redux';
+import { addItem } from '../Reducers/transaction';
 
 function DashBoard() {
     const token = localStorage.getItem('coffee_login');
+    const toast = useToast();
     const [isLoaded, setIsLoaded] = useState(false);
     const [page, setPage] = useState(0);
     const [size, setSize] = useState(8);
@@ -23,6 +28,8 @@ function DashBoard() {
     const [category, setCategory] = useState('');
     const [productList, setProductList] = useState([]);
     const [totalData, setTotalData] = useState(0);
+    const dispatch = useDispatch();
+    const transactions = useSelector((state) => state.transaction.transactions);
 
     let getProduct = async () => {
         try {
@@ -42,22 +49,45 @@ function DashBoard() {
         getProduct();
     }, [page, size, sortby, order, name, category]);
 
+    const handleSelectedProduct = (productDetail) => {
+        const existItem = transactions.find(item => item.id === productDetail.id);
+
+        if (!existItem) {
+            dispatch(addItem(productDetail));
+        } else {
+            return toast({
+                position: 'top',
+                title: 'Current Order',
+                description: 'This item is already in the current order',
+                status: 'info',
+                duration: 1500,
+                isClosable: true
+            })
+        }
+    }
+
+    const onSuccess = () => {
+        getProduct();
+    }
+
     const printProduct = () => {
         return productList.map((val) => {
             return (
                 <ProductCard
                     key={val.uuid}
                     uuid={val.uuid}
+                    id={val.id}
                     name={val.name}
                     image={val.product_image}
                     stock={val.stock}
                     price={val.price}
+                    onSelectedProduct = {handleSelectedProduct}
                 />
             )
-        })
+        });
     }
 
-    // Get Category 
+    // Get Category List
     const [categoryList, setCategoryList] = useState([]);
 
     const getCategory = async () => {
@@ -266,15 +296,47 @@ function DashBoard() {
                     w={'25%'}
                     h={'100vh'}
                     bg={'black'}
+                    flexDir={'column'}
                     justifyContent={'center'}
                     alignContent={'center'}
+                    px={'2'}
                 >
-                    <Text
-                        color={'white'}
-                        textAlign={'center'}
+                    <Flex
+                        h={'8vh'}
+                        w={'100%'}
+                        alignItems={'center'}
+                        borderBottom={'1px'}
+                        borderBottomColor={'white'}
                     >
-                        Transaction
-                    </Text>
+                        <Box
+                            px={'2'}
+                        >
+                            <Skeleton
+                                isLoaded={isLoaded}
+                            >
+                                <Text
+                                    color={'white'}
+                                    textAlign={'start'}
+                                    fontWeight={'semibold'}
+                                >
+                                    Current Orders :
+                                </Text>
+                            </Skeleton>
+                        </Box>
+                    </Flex>
+                    <Box
+                        h={'92vh'}
+                    >
+                        <Flex
+                            h={'90vh'}
+                            mt={'2'}
+                            mb={'1'}
+                        >
+                            <Order
+                                onSuccess={onSuccess}
+                            />
+                        </Flex>
+                    </Box>
                 </Flex>
             </Flex>
         </Box>
