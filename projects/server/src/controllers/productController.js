@@ -10,7 +10,8 @@ module.exports = {
                 size,
                 name,
                 sortby,
-                order
+                order,
+                category
             } = req.query;
 
             if (!page) {
@@ -28,11 +29,15 @@ module.exports = {
             if (!name) {
                 name= '';
             }
+            if (!category) {
+                category= '';
+            }
 
             let getProduct = await model.product.findAndCountAll({
                 attributes: ['uuid', 'name', 'product_image', 'price', 'stock', 'category_id', 'isDeleted'],
                 where: {
-                    name:{[sequelize.Op.like]: `%${name}%`}
+                    name:{[sequelize.Op.like]: `%${name}%`},
+                    '$category.category$': { [sequelize.Op.like]: `%${category}%` }
                 },
                 include:[
                     {
