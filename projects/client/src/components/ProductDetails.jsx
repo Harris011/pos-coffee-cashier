@@ -8,7 +8,6 @@ import {
     Input,
     Image,
     Switch,
-    Divider,
     Button,
     Select,
     IconButton,
@@ -32,38 +31,40 @@ function ProductDetails(props) {
 
     return ( 
         <Box
-            h={'86vh'}
+            h={'90vh'}
             px={'1.5'}
-            py={'1.5'}
             w={'100%'}
             rounded={'xl'}
         >
             <Flex
                 flexDir={'column'}
                 justifyContent={'space-between'}
-                h={'100%'}
+                h={'90vh'}
             >
                 <Flex
                     flexDir={'column'}
-                    justifyContent={'center'}
                     alignItems={'center'}
+                    h={'80vh'}
+                    pt={'2'}
                 >
                     <Box
                         border={'1px'}
                         borderColor={'white'}
                         position={'relative'}
                         mt={'0.5'}
+                        rounded={'md'}
                     >
                         <Skeleton
                             isLoaded={isLoaded}
                         >
                             <Image
                                 objectFit={'cover'}
-                                w={'250px'}
+                                w={'230px'}
                                 h={'150px'}
                                 src='https://images.unsplash.com/photo-1612880202987-b1ec29fb0839?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80'
                                 alt='Product Image'
                                 color={'white'}
+                                rounded={'md'}
                             />
                         </Skeleton>
                         <Skeleton
@@ -248,19 +249,15 @@ function ProductDetails(props) {
                 <Flex
                     justifyContent={'center'}
                     alignItems={'center'}
-                    flexDir={'column'}
-                    gap={'3'}
+                    h={'8vh'}
                     mb={'2'}
+                    borderTop={'1px'}
+                    borderColor={'white'}
+                    pt={'2.5'}
                 >
-                    <Box
-                        w={'90%'}
-                    >
-                        <Divider/>
-                    </Box>
                     <Flex
                         w={'90%'}
                         justifyContent={'space-evenly'}
-                        pt={'0.5'}
                     >
                         <Box>
                             <Skeleton

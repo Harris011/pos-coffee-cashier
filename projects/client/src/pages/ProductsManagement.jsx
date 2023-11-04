@@ -4,7 +4,6 @@ import {
     Button,
     Flex,
     Text,
-    Divider,
     IconButton,
     Skeleton,
     Tr,
@@ -17,9 +16,12 @@ import {
     Input,
     InputGroup,
     InputLeftElement,
-    InputRightElement,
     Select,
-    InputRightAddon
+    InputRightAddon,
+    MenuButton,
+    Menu,
+    MenuList,
+    MenuItem
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import axios from 'axios';
@@ -176,59 +178,61 @@ function ProductsManagement() {
                 >
                     {/* Title & Add Product */}
                     <Flex
-                        flexDir={'row'}
-                        justifyContent={'space-between'}
-                        alignItems={'center'}
                         h={'8vh'}
-                        pt={'2'}
+                        flexDir={'column'}
+                        justifyContent={'center'}
+                        borderBottom={'1px'}
+                        borderColor={'gray.300'}
+                        px={'1'}
                     >
-                        <Skeleton
-                            isLoaded={isLoaded}
+                        <Flex
+                            flexDir={'row'}
+                            justifyContent={'space-between'}
+                            alignItems={'center'}
                         >
-                            <Text
-                                fontWeight={'semibold'}
-                                fontSize={'xl'}
+                            <Skeleton
+                                isLoaded={isLoaded}
                             >
-                                Products
-                            </Text>
-                        </Skeleton>
-                        <Skeleton
-                            isLoaded={isLoaded}
-                        >
-                            <Button
-                                size={'xs'}
-                                color={'white'}
-                                leftIcon={
-                                    <AddIcon
-                                        boxSize={'3'}
-                                    />
-                                }
-                                iconSpacing={'2'}
-                                letterSpacing={'tight'}
-                                border={'0.5px'}
-                                borderStyle={'dashed'}
-                                borderColor={'black'}
-                                variant={'solid'}
-                                bg={'black'}
-                                onClick={() => setActiveComponent('add')}
+                                <Text
+                                    fontSize={'xl'}
+                                    fontWeight={'semibold'}
+                                >
+                                    Product
+                                </Text>
+                            </Skeleton>
+                            <Skeleton
+                                isLoaded={isLoaded}
                             >
-                                Add Product
-                            </Button>
-                        </Skeleton>
+                                <Button
+                                    size={'xs'}
+                                    color={'white'}
+                                    leftIcon={
+                                        <AddIcon
+                                            boxSize={'3'}
+                                        />
+                                    }
+                                    letterSpacing={'tight'}
+                                    border={'0.5px'}
+                                    borderColor={'black'}
+                                    variant={'solid'}
+                                    bg={'black'}
+                                    onClick={() => setActiveComponent('add')}
+                                >
+                                    Add Product
+                                </Button>
+                            </Skeleton>
+                        </Flex>
                     </Flex>
-                    {/* Search and Filter */}
+                    {/* Search and sort product */}
                     <Box
                         h={'8vh'}
-                        pt={'1.5'}
                     >
-                        <Box>
-                            <Divider/>
-                        </Box>
                         <Flex
                             justifyContent={'space-between'}
                             alignItems={'center'}
                             w={'100%'}
-                            pt={'2'}
+                            py={'2'}
+                            px={'1'}
                         >
                             <Skeleton
                                 isLoaded={isLoaded}
@@ -296,11 +300,68 @@ function ProductsManagement() {
                                     isLoaded={isLoaded}
                                 >
                                     <Box>
-                                        <IconButton
-                                            icon={<BiFilterAlt size={'20px'} />}
+                                        <Menu
+                                            placement={'top-end'}
                                             size={'sm'}
-                                            rounded={'sm'}
-                                        />
+                                        >
+                                            <MenuButton>
+                                                <IconButton
+                                                    icon={<BiFilterAlt size={'20px'} />}
+                                                    size={'sm'}
+                                                    rounded={'sm'}
+                                                />
+                                            </MenuButton>
+                                            <MenuList>
+                                                <MenuItem
+                                                    onClick={() => {
+                                                        setSortby('name')
+                                                        setOrder('ASC')
+                                                    }}
+                                                >
+                                                    <Text
+                                                        fontSize={'sm'}
+                                                    >
+                                                        Sort by Name: (A - Z)
+                                                    </Text>
+                                                </MenuItem>
+                                                <MenuItem
+                                                    onClick={() => {
+                                                        setSortby('name')
+                                                        setOrder('DESC')
+                                                    }}
+                                                >
+                                                    <Text
+                                                        fontSize={'sm'}
+                                                    >
+                                                        Sort by Name: (Z - A)
+                                                    </Text>
+                                                </MenuItem>
+                                                <MenuItem
+                                                    onClick={() => {
+                                                        setSortby('price')
+                                                        setOrder('ASC')
+                                                    }}
+                                                >
+                                                    <Text
+                                                        fontSize={'sm'}
+                                                    >
+                                                        Sort by Price: (low - high)
+                                                    </Text>
+                                                </MenuItem>
+                                                <MenuItem
+                                                    onClick={() => {
+                                                        setSortby('price')
+                                                        setOrder('DESC')
+                                                    }}
+                                                >
+                                                    <Text
+                                                        fontSize={'sm'}
+                                                    >
+                                                        Sort by Price: (high - low)
+                                                    </Text>
+                                                </MenuItem>
+                                            </MenuList>
+                                        </Menu>
                                     </Box>
                                 </Skeleton>
                             </Flex>
@@ -309,24 +370,23 @@ function ProductsManagement() {
                     {/* Table */}
                     <Flex
                         flexDir={'column'}
-                        h={'80vh'}
+                        h={'84vh'}
                         justifyContent={'space-between'}
                         border={'1px'}
                         rounded={'xl'}
-                        my={'4'}
                         px={'2'}
+                        mb={'1'}
                     >
                         <Flex
                             justifyContent={'center'}
                             borderBottom={'1px'}
-                            h={'69vh'}
+                            h={'74vh'}
                         >
                             <Skeleton
                                 isLoaded={isLoaded}
                                 rounded={'xl'}
                             >
                                 <TableContainer
-                                    maxH={'70vh'}
                                     w={'65vw'}
                                 >
                                     <Table
@@ -382,20 +442,20 @@ function ProductsManagement() {
                         </Flex>
                         <Flex
                             justifyContent={'space-between'}
-                            py={'2.5'}
-                            px={'2.5'}
+                            px={'1'}
                             alignItems={'center'}
+                            h={'8vh'}
                         >
                             <Flex
                                 justifyContent={'start'}
-                                alignItems={'center'}
-                                gap={'1.5'}
+                                alignItems={'baseline'}
+                                flexDir={'row'}
                                 w={'20%'}
-                                px={'4'}
                             >
                                 <Flex
-                                    justifyContent={'center'}
-                                    w={'10%'}
+                                    w={'20%'}
+                                    justifyContent={'end'}
+                                    mr={'1.5'}
                                 >
                                     <Skeleton
                                         isLoaded={isLoaded}
@@ -436,13 +496,13 @@ function ProductsManagement() {
                     w={'25%'}
                     h={'100vh'}
                     flexDir={'column'}
-                    gap={'5'}
                     px={'2'}
                 >
                     <Flex
                         h={'8vh'}
-                        pt={'4'}
-                        flexDir={'column'}
+                        alignItems={'center'}
+                        borderBottom={'1px'}
+                        borderColor={'white'}
                     >
                         <Box
                             px={'2'}
@@ -492,54 +552,51 @@ function ProductsManagement() {
                                 )
                             }
                         </Box>
-                        <Box
-                            pt={'3.5'}
-                            px={'2'}
-                        >
-                            <Divider
-                                colorScheme={'whiteAlpha'}
-                            />
-                        </Box>
                     </Flex>
-                    <Flex
-                        border={'1px'}
-                        rounded={'xl'}
-                        borderColor={'white'}
-                        h={'86vh'}
+                    {/* add & detail product component */}
+                    <Box
+                        h={'92vh'}
                     >
-                        {
+                        <Flex
+                            h={'90vh'}
+                            mt={'2'}
+                            mb={'1'}
+                            border={'1px'}
+                            rounded={'xl'}
+                            borderColor={'white'}
+                            justifyContent={'center'}
+                            alignItems={'center'}
+                        >
+                            {
                             activeComponent === 'none' && 
-                            (
-                                <Flex
-                                    mx={'auto'}
-                                    my={'auto'}
-                                    h={'min-content'}
-                                >
-                                    <Skeleton
-                                        isLoaded={isLoaded}
-                                    >
-                                        <Text
-                                            color={'white'}
+                                (
+                                    <Flex>
+                                        <Skeleton
+                                            isLoaded={isLoaded}
                                         >
-                                            No Items
-                                        </Text>
-                                    </Skeleton>
-                                </Flex>
-                            )
-                        }
-                        {
-                            activeComponent === 'add' && 
-                            <AddProduct
-                                handleCloseComponent={handleCloseComponent}
-                            />
-                        }
-                        {
-                            activeComponent === 'details' && 
-                            <ProductDetails
-                                handleCloseComponent={handleCloseComponent}
-                            />
-                        }
-                    </Flex>
+                                            <Text
+                                                color={'white'}
+                                            >
+                                                No Items
+                                            </Text>
+                                        </Skeleton>
+                                    </Flex>
+                                )
+                            }
+                            {
+                                activeComponent === 'add' && 
+                                <AddProduct
+                                    handleCloseComponent={handleCloseComponent}
+                                />
+                            }
+                            {
+                                activeComponent === 'details' && 
+                                <ProductDetails
+                                    handleCloseComponent={handleCloseComponent}
+                                />
+                            }
+                        </Flex>
+                    </Box>
                 </Flex>
             </Flex>
         </Box>
