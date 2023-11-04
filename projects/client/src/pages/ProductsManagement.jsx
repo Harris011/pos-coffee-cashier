@@ -21,7 +21,9 @@ import {
     MenuButton,
     Menu,
     MenuList,
-    MenuItem
+    MenuItem,
+    useToast,
+    Switch
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import axios from 'axios';
@@ -33,6 +35,7 @@ import ProductDetails from '../components/ProductDetails';
 
 function ProductsManagement() {
     const token = localStorage.getItem('coffee_login');
+    const toast = useToast();
     const [isLoaded, setIsLoaded] = useState(false);
     const [page, setPage] = useState(0);
     const [size, setSize] = useState(12);
@@ -44,8 +47,12 @@ function ProductsManagement() {
     const [productList, setProductList] = useState([]);
     const [totalData, setTotalData] = useState(0);
     const [activeComponent, setActiveComponent] = useState('none');
-
-    console.log("Product List :", productList);
+    const [selectedProduct, setSelectedProduct] = useState('');
+    const [productName, setProductName] = useState('');
+    const [productCategory, setProductCategory] = useState('');
+    const [productStock, setProductStock] = useState('');
+    const [productPrice, setProductPrice] = useState('');
+    const [productImage, setProductImage] = useState('');
 
     let getProduct = async () => {
         try {
@@ -61,6 +68,40 @@ function ProductsManagement() {
         }
     }
 
+    // Delete product
+    const onBtnDelete = async (uuid, isDeleted) => {
+        try {
+            let response = await axios.patch(`http://localhost:8000/api/product/delete/${uuid}`, {
+                isDeleted: isDeleted
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            if (response.data.success) {
+                toast({
+                    position: 'top',
+                    title: 'Product status',
+                    description: response.data.message,
+                    status: 'info',
+                    duration: 2000,
+                    isClosable: true
+                })
+                getProduct();
+            }
+        } catch (error) {
+            console.log(error);
+            toast({
+                position: 'top',
+                title: 'Product status',
+                description: error.response.data.message,
+                status: 'error',
+                duration: 2000,
+                isClosable: true
+            })
+        }
+    }
+
     useEffect(() => {
         getProduct();
     }, [page, size, sortby, order, name, category, selectedOption]);
@@ -68,6 +109,10 @@ function ProductsManagement() {
     const printProduct = () => {
         return productList.map((val, idx) => {
             const itemNumber = (page * size) + idx + 1;
+            const formattedPrice = val.price.toLocaleString('id-ID', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
             return (
                 <Tr
                     key={val.uuid}
@@ -78,6 +123,7 @@ function ProductsManagement() {
                         <Flex
                             alignItems={'center'}
                             justifyContent={'center'}
+                            px={'1'}
                         >
                             #{itemNumber}
                         </Flex>
@@ -87,12 +133,17 @@ function ProductsManagement() {
                             justifyContent={'start'}
                             alignItems={'center'}
                             w={'120px'}
+                            overflow={'hidden'}
+                            whiteSpace={'nowrap'}
+                            textOverflow={'ellipsis'}
+                            display={'block'}
                         >
                             {val.name}
                         </Flex>
                     </Td>
                     <Td
                         textAlign={'center'}
+                        px={'1'}
                     >
                         <Flex
                             justifyContent={'start'}
@@ -112,30 +163,62 @@ function ProductsManagement() {
                     </Td>
                     <Td>
                         <Flex
-                            justifyContent={'center'}
+                            justifyContent={'start'}
                             alignItems={'center'}
+                            w={'60px'}
                         >
-                            {val.price}
+                            {formattedPrice}
                         </Flex>
                     </Td>
                     <Td
                         textAlign={'center'}
                     >
-                        <Box
-                            color={val.isDeleted ? 'red.500' : 'green.500'}
+                        <Flex
+                            flexDir={'row'}
+                            w={'80px'}
+                            justifyContent={'space-between'}
                         >
-                            {val.isDeleted ? 'inactive' : 'active'}
-                        </Box>
+                            <Switch
+                                colorScheme='red'
+                                size={'sm'}
+                                isChecked={val.isDeleted}
+                                onChange={() => {
+                                    onBtnDelete(val.uuid, !val.isDeleted)
+                                }}
+                            />
+                            <Box
+                                color={val.isDeleted ? 'red.500' : 'green.500'}
+                            >
+                                <Text
+                                    letterSpacing={'tight'}
+                                    fontSize={'sm'}
+                                >
+                                    {val.isDeleted ? 'Inactive' : 'Active'}
+                                </Text>
+                            </Box>
+                        </Flex>
                     </Td>
                     <Td
                         textAlign={'center'}
                     >
-                        <Text
-                            as={'button'}
-                            onClick={() => setActiveComponent('details')}
+                        <Flex
+                            justifyContent={'center'}
                         >
-                            Detail
-                        </Text>
+                            <Text
+                                as={'button'}
+                                onClick={() => {
+                                    setActiveComponent('details');
+                                    setSelectedProduct(val.uuid);
+                                    setProductName(val.name);
+                                    setProductCategory(val.category.id);
+                                    setProductStock(val.stock);
+                                    setProductPrice(val.price);
+                                    setProductImage(val.product_image);
+                                }}
+                            >
+                                Detail
+                            </Text>
+                        </Flex>
                     </Td>
                 </Tr>
             )
@@ -144,6 +227,10 @@ function ProductsManagement() {
 
     const paginate = pageNumbers => {
         setPage(pageNumbers)
+    }
+
+    const onSuccess = () => {
+        getProduct();
     }
 
     const handleCloseComponent = () => {
@@ -388,6 +475,7 @@ function ProductsManagement() {
                             >
                                 <TableContainer
                                     w={'65vw'}
+                                    whiteSpace={'pre-line'}
                                 >
                                     <Table
                                         size={'sm'}
@@ -398,6 +486,7 @@ function ProductsManagement() {
                                             <Tr>
                                                 <Th
                                                     textAlign={'center'}
+                                                    px={'1'}
                                                 >
                                                     Number
                                                 </Th>
@@ -408,18 +497,19 @@ function ProductsManagement() {
                                                 </Th>
                                                 <Th
                                                     textAlign={'start'}
+                                                    px={'1'}
                                                 >
                                                     Category
                                                 </Th>
                                                 <Th
-                                                    textAlign={'ce'}
+                                                    textAlign={'center'}
                                                 >
                                                     Stock
                                                 </Th>
                                                 <Th
-                                                    textAlign={'center'}
+                                                    textAlign={'start'}
                                                 >
-                                                    Price
+                                                    Price (Rp)
                                                 </Th>
                                                 <Th
                                                     textAlign={'center'}
@@ -446,37 +536,32 @@ function ProductsManagement() {
                             alignItems={'center'}
                             h={'8vh'}
                         >
-                            <Flex
-                                justifyContent={'start'}
-                                alignItems={'baseline'}
-                                flexDir={'row'}
-                                w={'20%'}
+                            <Skeleton
+                                isLoaded={isLoaded}
                             >
                                 <Flex
-                                    w={'20%'}
-                                    justifyContent={'end'}
-                                    mr={'1.5'}
+                                    flexDir={'row'}
+                                    alignItems={'baseline'}
+                                    w={'115px'}
+                                    justifyContent={'space-between'}
                                 >
-                                    <Skeleton
-                                        isLoaded={isLoaded}
+                                    <Flex
+                                        w={'20%'}
+                                        justifyContent={'end'}
                                     >
                                         <Text
                                             textAlign={'center'}
                                         >
                                             {Math.min(productList.length)}
                                         </Text>
-                                    </Skeleton>
-                                </Flex>
-                                <Skeleton
-                                    isLoaded={isLoaded}
-                                >
+                                    </Flex>
                                     <Text
                                         textAlign={'center'}
                                     >
                                         of {totalData} results
                                     </Text>
-                                </Skeleton>
-                            </Flex>
+                                </Flex>
+                            </Skeleton>
                             <Skeleton
                                 isLoaded={isLoaded}
                             >
@@ -587,12 +672,20 @@ function ProductsManagement() {
                                 activeComponent === 'add' && 
                                 <AddProduct
                                     handleCloseComponent={handleCloseComponent}
+                                    onSuccess={onSuccess}
                                 />
                             }
                             {
                                 activeComponent === 'details' && 
                                 <ProductDetails
                                     handleCloseComponent={handleCloseComponent}
+                                    onSuccess={onSuccess}
+                                    uuid={selectedProduct}
+                                    name={productName}
+                                    category={productCategory}
+                                    stock={productStock}
+                                    price={productPrice}
+                                    image={productImage}
                                 />
                             }
                         </Flex>
