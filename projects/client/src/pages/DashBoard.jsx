@@ -10,7 +10,7 @@ function DashBoard() {
     return ( 
         <Box
             h={'100vh'}
-            w={'92vw'}
+            w={'94vw'}
             // bg={'skyblue'}
         >
             <Flex

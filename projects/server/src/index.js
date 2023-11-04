@@ -21,10 +21,12 @@ app.use(bearerToken());
 
 //#region API ROUTES
 const userRouter = require('./routers/userRouter');
+const productRouter = require('./routers/productRouter');
 
 // ===========================
 // NOTE : Add your routes here
 app.use('/api/user', userRouter);
+app.use('/api/product', productRouter);
 
 app.get("/api", (req, res) => {
     res.send(`Hello, this is my API`);
