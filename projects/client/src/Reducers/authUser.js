@@ -7,7 +7,6 @@ const authUserSlice = createSlice({
         username: '',
         role_id: '',
         role: '',
-        // id: ''
     },
     reducers: {
         loginAction: (state, action) => {
@@ -15,14 +14,12 @@ const authUserSlice = createSlice({
             state.username= action.payload.username;
             state.role_id= action.payload.role_id;
             state.role= action.payload.role;
-            // state.id= action.payload.id;
         },
         logoutAction: (state) => {
             state.email= '';
             state.username= '';
             state.role_id= '';
             state.role='';
-            // state.id= '';
         }
     }
 });

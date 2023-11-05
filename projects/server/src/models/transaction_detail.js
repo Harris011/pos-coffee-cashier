@@ -19,6 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     total_quantity: DataTypes.INTEGER,
     price_on_date: DataTypes.INTEGER,
     total_price: DataTypes.INTEGER,
+    total_price_tax: DataTypes.INTEGER,
     product_id: DataTypes.INTEGER,
     transaction_id: DataTypes.INTEGER,
     date: DataTypes.DATE,

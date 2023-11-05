@@ -113,26 +113,15 @@ function BestSellers() {
                                     </Th>
                                 </Tr>
                             </Thead>
-                            {/* <Box
-                                h={'55vh'}
-                                overflow={'auto'}
-                                position={'relative'}
-                                scrollBehavior={'smooth'}
-                                sx={{
-                                    '::-webkit-scrollbar': {
-                                        width: '0'
-                                    },
-                                }}
-                            >
-                                <Tbody>
-                                    {printProduct()}
-                                </Tbody>
-                            </Box> */}
                         </Table>
                     </TableContainer>
                     <TableContainer
                         w={'100%'}
-                        style={{ height: '55vh', overflow: 'auto' }}
+                        style={{ 
+                            height: '55vh', 
+                            overflow: 'auto'
+                        }}
+                        sx={{'::-webkit-scrollbar': {display: 'none'}}}
                     >
                         <Table
                             size={'sm'}

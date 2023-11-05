@@ -13,10 +13,12 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       transaction.hasMany(models.transaction_detail, {foreignKey: 'transaction_id'});
       transaction.belongsTo(models.users, {foreignKey: 'user_id'});
+      transaction.belongsTo(models.status, {foreignKey: 'status_id'});
     }
   }
   transaction.init({
-    user_id: DataTypes.INTEGER
+    user_id: DataTypes.INTEGER,
+    status_id: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'transaction',

@@ -58,12 +58,28 @@ function RecentActivity() {
                     <Td
                         textAlign={'center'}
                     >
-                        {val.user}
+                        <Flex
+                            w={'110px'}
+                            justifyContent={'center'}
+                            whiteSpace={'nowrap'}
+                            overflow={'hidden'}
+                            textOverflow={'ellipsis'}
+                            display={'block'}
+                            mx={'auto'}
+                        >
+                            {val.user}
+                        </Flex>
                     </Td>
                     <Td
                         textAlign={'center'}
                     >
-                        {val.transaction_date}
+                        <Flex
+                            w={'70px'}
+                            justifyContent={'center'}
+                            mx={'auto'}
+                        >
+                            {val.transaction_date}
+                        </Flex>
                     </Td>
                     <Td
                         textAlign={'center'}
@@ -72,10 +88,14 @@ function RecentActivity() {
                             w={'50%'}
                             justifyContent={'start'}
                             mx={'auto'}
-                            px={'2'}
                         >
                             {val.total_price_sum}
                         </Flex>
+                    </Td>
+                    <Td
+                        textAlign={'center'}
+                    >
+                        {val.status}
                     </Td>
                 </Tr>
             )
@@ -179,6 +199,12 @@ function RecentActivity() {
                                                 fontWeight={'normal'}
                                             >
                                                 Total Transaction
+                                            </Th>
+                                            <Th
+                                                textAlign={'center'}
+                                                fontWeight={'normal'}
+                                            >
+                                                Status
                                             </Th>
                                         </Tr>
                                     </Thead>

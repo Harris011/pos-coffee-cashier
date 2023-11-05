@@ -18,6 +18,9 @@ module.exports = {
       total_price: {
         type: Sequelize.INTEGER
       },
+      total_price_tax: {
+        type: Sequelize.INTEGER
+      },
       product_id: {
         type: Sequelize.INTEGER
       },
