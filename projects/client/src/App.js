@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-import {Routes, Route} from 'react-router-dom';
+import {Routes, Route, Navigate} from 'react-router-dom';
 import { useEffect } from 'react';
 import { Box, Flex } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,6 +13,7 @@ import ProductsManagement from './pages/ProductsManagement';
 import CategoriesManagement from './pages/CategoriesManagement';
 import EmployeeManagement from './pages/EmployeeManagement';
 import DashBoards from './pages/DashBoards';
+import PageNotFound from './pages/PageNotFound';
 
 function App() {
   const dispatch = useDispatch();
@@ -60,16 +61,34 @@ function App() {
                 w={'94vw'}
               >
                 <Routes>
-                  <Route path='/dashboards' element={<DashBoards/>} />
-                  <Route path='/dashboard' element={<DashBoard/>} />
-                  <Route path='/products' element={<ProductsManagement/>} />
-                  <Route path='/categories' element={<CategoriesManagement/>} />
-                  <Route path='/employee' element={<EmployeeManagement/>} />
+                  {
+                    roleId === 1 && (
+                      <>
+                        <Route path='/dashboards' element={<DashBoards/>} />
+                        <Route path='/products' element={<ProductsManagement/>} />
+                        <Route path='/categories' element={<CategoriesManagement/>} />
+                        <Route path='/employee' element={<EmployeeManagement/>} />
+                      </>
+                    )
+                  }
+                  {
+                    roleId === 2 && (
+                      <>
+                        <Route path='/dashboard' element={<DashBoard/>} />
+                        <Route path='/transaction' element={<DashBoard/>} />
+                      </>
+                    )
+                  }
+                  <Route path='*' element={<PageNotFound/>}/>
+                  <Route path='/' element={<Navigate to={roleId === 1 ? '/dashboards' : '/dashboard'}/>} />
                 </Routes>
               </Box>
             </Flex>
           ) : (
-            <Login/>
+            <Routes>
+              <Route path='/' element={<Login/>} />
+              <Route path='*' element={<PageNotFound/>}/>
+            </Routes>
           )}
       </Box>
     </div>
