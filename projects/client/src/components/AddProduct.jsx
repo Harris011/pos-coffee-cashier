@@ -139,7 +139,7 @@ function AddProduct(props) {
 
     const getCategory = async () => {
         try {
-            let response = await axios.get(`http://localhost:8000/api/category/list`, {
+            let response = await axios.get(`http://localhost:8000/api/category/category-list`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -150,7 +150,6 @@ function AddProduct(props) {
             console.log(error);
         }
     }
-
 
     useEffect(() => {
         getCategory();
@@ -265,6 +264,8 @@ function AddProduct(props) {
                                     bg={'white'}
                                     variant={'outline'}
                                     type='text'
+                                    letterSpacing={'tight'}
+                                    placeholder={`Enter the Product's Name`}
                                     onChange={(e) => setName(e.target.value)}
                                 />
                             </Skeleton>
@@ -330,6 +331,8 @@ function AddProduct(props) {
                                     bg={'white'}
                                     variant={'outline'}
                                     type='number'
+                                    letterSpacing={'tight'}
+                                    placeholder='Product Stock'
                                     onChange={(e) => setStock(e.target.value)}
                                 />
                             </Skeleton>
@@ -356,6 +359,8 @@ function AddProduct(props) {
                                     bg={'white'}
                                     variant={'outline'}
                                     type='number'
+                                    letterSpacing={'tight'}
+                                    placeholder='Product Price'
                                     onChange={(e) => setPrice(e.target.value)}
                                 />
                             </Skeleton>

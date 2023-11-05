@@ -133,8 +133,6 @@ module.exports = {
                     uuid: {[sequelize.Op.ne]:req.params.uuid}
                 }
             });
-    
-            console.log('Data check product from edit :', checkProduct);
 
             if (checkProduct.length == 0) {
                 const {
@@ -165,7 +163,7 @@ module.exports = {
                     newImage = `/imgProduct/${req.files[0]?.filename}`
                 }
 
-                let edit = await model.product.update({
+                let updateProduct = await model.product.update({
                     name,
                     product_image: newImage,
                     price,
@@ -177,13 +175,19 @@ module.exports = {
                     }
                 })
 
-                console.log("Data after edit :", edit);
-
-                res.status(200).send({
-                    success: true,
-                    message: 'Product change success',
-                    data: edit
-                })
+                if (updateProduct == 1) {
+                    res.status(200).send({
+                        success: true,
+                        message: 'Product change success',
+                        data: updateProduct
+                    })
+                } else {
+                    res.status(200).send({
+                        success: true,
+                        message: 'No Product information changed',
+                        data: updateProduct
+                    })
+                }
 
                 if (oldImage !== newImage) {
                     if (fs.existsSync(join(__dirname, `../public${oldImage}`)) && !oldImage.includes('default') ) {
@@ -210,8 +214,6 @@ module.exports = {
                     uuid: req.params.uuid
                 }
             })
-
-            console.log("Data check product from drop :", checkProduct);
 
             if (checkProduct[0].dataValues.isDeleted == false) {
                 await model.product.update({isDeleted: 1}, {

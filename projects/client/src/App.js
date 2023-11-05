@@ -1,15 +1,17 @@
 import logo from './logo.svg';
 import './App.css';
 import {Routes, Route} from 'react-router-dom';
+import { useEffect } from 'react';
 import { Box, Flex } from '@chakra-ui/react';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginAction } from './Reducers/authUser';
+import axios from 'axios';
+import Login from './pages/Login';
 import SideBar from './components/Sidebar';
 import DashBoard from './pages/DashBoard';
-import Login from './pages/Login';
-import { useDispatch, useSelector } from 'react-redux';
-import axios from 'axios';
-import { loginAction } from './Reducers/authUser';
-import { useEffect } from 'react';
 import ProductsManagement from './pages/ProductsManagement';
+import CategoriesManagement from './pages/CategoriesManagement';
+import EmployeeManagement from './pages/EmployeeManagement';
 
 function App() {
   const dispatch = useDispatch();
@@ -47,14 +49,12 @@ function App() {
               justifyContent={'space-between'}
             >
               <Box
-                // bg={'red.400'}
                 h={'100vh'}
                 w={'6vw'}
               >
                 <SideBar/>
               </Box>
               <Box
-                // bg={'gold'}
                 h={'100vh'}
                 w={'94vw'}
               >
@@ -62,6 +62,8 @@ function App() {
                   {/* <Route path='/' element={<Login/>} /> */}
                   <Route path='/dashboard' element={<DashBoard/>} />
                   <Route path='/products' element={<ProductsManagement/>} />
+                  <Route path='/categories' element={<CategoriesManagement/>} />
+                  <Route path='/employee' element={<EmployeeManagement/>} />
                 </Routes>
               </Box>
             </Flex>
