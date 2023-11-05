@@ -77,8 +77,13 @@ function Login() {
                 });
                 setTimeout(() => {
                     localStorage.setItem('coffee_login', response.data.token);
-                    dispatch(loginAction(response.data))
-                    navigate('/dashboard', {replace: true});
+                    dispatch(loginAction(response.data));
+
+                    if (response.data.role_id === 1) {
+                        navigate('/dashboards', {replace: true});
+                    } else {
+                        navigate('/dashboard', {replace: true});
+                    }
                 }, 1500);
                 setLoading(false);
             }
@@ -198,7 +203,7 @@ function Login() {
                                 letterSpacing={'tight'}
                                 pt={'1'}
                             >
-                                Forgot password ? Please contact the Admin
+                                Forgot password ? Please contact administrator for assistance.
                             </Text>
                         </Box>
                     </Flex>

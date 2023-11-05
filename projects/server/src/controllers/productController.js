@@ -276,7 +276,7 @@ module.exports = {
             }
 
             let getProduct = await model.product.findAndCountAll({
-                attributes: ['uuid', 'name', 'product_image', 'price', 'stock', 'category_id', 'isDeleted'],
+                attributes: ['id' ,'uuid', 'name', 'product_image', 'price', 'stock', 'category_id', 'isDeleted'],
                 where: {
                     name:{[sequelize.Op.like]: `%${name}%`},
                     isDeleted: false,

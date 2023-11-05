@@ -419,12 +419,19 @@ function EmployeeManagement() {
                                             placement={'top-end'}
                                             size={'sm'}
                                         >
-                                            <MenuButton>
-                                                <IconButton
-                                                    icon={<BiFilterAlt size={'20px'} />}
-                                                    size={'sm'}
-                                                    rounded={'sm'}
-                                                />
+                                            <MenuButton
+                                                bg={'gray.100'}
+                                                boxSize={'8'}
+                                                rounded={'sm'}
+                                            >
+                                                <Flex
+                                                    align={'center'}
+                                                    justify={'center'}
+                                                    h={'100%'}
+                                                    w={'100%'}
+                                                >
+                                                    <BiFilterAlt size={'20px'} />
+                                                </Flex>
                                             </MenuButton>
                                             <MenuList>
                                                 <MenuItem
@@ -522,17 +529,20 @@ function EmployeeManagement() {
                                                 totalData ?
                                                 printUser()
                                                 :
-                                                <Flex
-                                                    position={'absolute'}
-                                                    top={'50%'}
-                                                    left={'50%'}
-                                                    transform={'translate(-50%, -50%)'}
-                                                >
-                                                    <Text>
-                                                        No Employee Found
-                                                    </Text>
-                                                </Flex>
-
+                                                <Tr>
+                                                    <Td>
+                                                        <Flex
+                                                            position={'absolute'}
+                                                            top={'50%'}
+                                                            left={'50%'}
+                                                            transform={'translate(-50%, -50%)'}
+                                                        >
+                                                            <Text>
+                                                                No Employee Found
+                                                            </Text>
+                                                        </Flex>
+                                                    </Td>
+                                                </Tr>
                                             }
                                         </Tbody>
                                     </Table>
@@ -625,7 +635,7 @@ function EmployeeManagement() {
                                             color={'white'}
                                             textAlign={'start'}
                                         >
-                                            Create New Employee
+                                            Create New User
                                         </Text>
                                     </Skeleton>
                                 )

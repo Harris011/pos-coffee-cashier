@@ -6,7 +6,7 @@ const authUserSlice = createSlice({
         email: '',
         username: '',
         role_id: '',
-        role: ''
+        role: '',
     },
     reducers: {
         loginAction: (state, action) => {

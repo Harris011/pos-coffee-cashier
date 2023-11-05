@@ -36,7 +36,6 @@ function CategoryCard(props) {
                 rounded={'md'}
                 border={'1px'}
                 borderColor={'gray.200'}
-                as={'button'}
                 onClick={() => {
                     props.setActiveComponent('details');
                     props.setSelectedCategory(category);

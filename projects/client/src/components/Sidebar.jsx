@@ -14,14 +14,16 @@ import { GiCoffeeBeans } from 'react-icons/gi';
 import { BsBoxes } from 'react-icons/bs';
 import { BiCategoryAlt } from 'react-icons/bi';
 import { IoIosPeople } from 'react-icons/io';
-import { FaRegChartBar } from 'react-icons/fa';
+// import { FaRegChartBar } from 'react-icons/fa';
+import { FaMoneyBillTransfer } from 'react-icons/fa6';
 import { FiLogOut } from 'react-icons/fi';
 import { logoutAction } from '../Reducers/authUser';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 function SideBar() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const roleId = useSelector((state) => state.authUser.role_id);
     const [isLoaded, setIsLoaded] = useState(false);
     
     const logoutBtn = () => {
@@ -73,139 +75,177 @@ function SideBar() {
                         </Skeleton>
                     </Flex>
                     {/* Menu */}
-                    <Flex
-                        flexDir={'column'}
-                        gap={'1.5'}
-                        alignItems={'center'}
-                        h={'82vh'}
-                        pt={'2'}
-                    >
-                        <Link
-                            onClick={() => navigate('/dashboard')}
-                        >
-                            <Skeleton
-                                isLoaded={isLoaded}
-                                fitContent='true'
+                    {
+                        roleId == 1 ? (
+                            <Flex
+                                flexDir={'column'}
+                                gap={'1.5'}
+                                alignItems={'center'}
+                                h={'82vh'}
+                                pt={'2'}
                             >
-                                <Tooltip
-                                    label={'Dashboard'}
-                                    hasArrow
-                                    bg={'white'}
-                                    color={'black'}
-                                    placement={'right'}
-                                    closeOnClick={false}
+                                <Link
+                                    onClick={() => navigate('/dashboards')}
                                 >
-                                    <IconButton
-                                        icon={<AiFillHome size={'25px'} />}
-                                        size={'sm'}
-                                        variant={'unstyled'}
-                                        color={'white'}
-                                        px={'1'}
-                                    />
-                                </Tooltip>
-                            </Skeleton>
-                        </Link>
-                        <Link
-                            onClick={() => navigate('/products')}
-                        >
-                            <Skeleton
-                                isLoaded={isLoaded}
-                                fitContent='true'
+                                    <Skeleton
+                                        isLoaded={isLoaded}
+                                        fitContent='true'
+                                    >
+                                        <Tooltip
+                                            label={'Dashboards'}
+                                            hasArrow
+                                            bg={'white'}
+                                            color={'black'}
+                                            placement={'right'}
+                                            closeOnClick={false}
+                                        >
+                                            <IconButton
+                                                icon={<AiFillHome size={'25px'} />}
+                                                size={'sm'}
+                                                variant={'unstyled'}
+                                                color={'white'}
+                                                px={'1'}
+                                            />
+                                        </Tooltip>
+                                    </Skeleton>
+                                </Link>
+                                <Link
+                                    onClick={() => navigate('/products')}
+                                >
+                                    <Skeleton
+                                        isLoaded={isLoaded}
+                                        fitContent='true'
+                                    >
+                                        <Tooltip
+                                            label={'Products'}
+                                            hasArrow
+                                            bg={'white'}
+                                            color={'black'}
+                                            placement={'right'}
+                                            closeOnClick={false}
+                                        >
+                                            <IconButton
+                                                icon={<BsBoxes size={'25px'} />}
+                                                size={'sm'}
+                                                variant={'unstyled'}
+                                                color={'white'}
+                                                px={'1'}
+                                            />
+                                        </Tooltip>
+                                    </Skeleton>
+                                </Link>
+                                <Link
+                                    onClick={() => navigate('/categories')}
+                                >
+                                    <Skeleton
+                                        isLoaded={isLoaded}
+                                        fitContent='true'
+                                    >
+                                        <Tooltip
+                                            label={'Categories'}
+                                            hasArrow
+                                            bg={'white'}
+                                            color={'black'}
+                                            placement={'right'}
+                                            closeOnClick={false}
+                                        >
+                                            <IconButton
+                                                icon={<BiCategoryAlt size={'25px'} />}
+                                                size={'sm'}
+                                                variant={'unstyled'}
+                                                color={'white'}
+                                                px={'1'}
+                                            />
+                                        </Tooltip>
+                                    </Skeleton>
+                                </Link>
+                                <Link
+                                    onClick={() => navigate('/employee')}
+                                >
+                                    <Skeleton
+                                        isLoaded={isLoaded}
+                                        fitContent='true'
+                                    >
+                                        <Tooltip
+                                            label={'Employee'}
+                                            hasArrow
+                                            bg={'white'}
+                                            color={'black'}
+                                            placement={'right'}
+                                            closeOnClick={false}
+                                        >
+                                            <IconButton
+                                                icon={<IoIosPeople size={'25px'} />}
+                                                size={'sm'}
+                                                variant={'unstyled'}
+                                                color={'white'}
+                                                px={'1'}
+                                            />
+                                        </Tooltip>
+                                    </Skeleton>
+                                </Link>
+                            </Flex>
+                        ) : (
+                            <Flex
+                                flexDir={'column'}
+                                gap={'1.5'}
+                                alignItems={'center'}
+                                h={'82vh'}
+                                pt={'2'}
                             >
-                                <Tooltip
-                                    label={'Products'}
-                                    hasArrow
-                                    bg={'white'}
-                                    color={'black'}
-                                    placement={'right'}
-                                    closeOnClick={false}
+                                <Link
+                                    onClick={() => navigate('/dashboard')}
                                 >
-                                    <IconButton
-                                        icon={<BsBoxes size={'25px'} />}
-                                        size={'sm'}
-                                        variant={'unstyled'}
-                                        color={'white'}
-                                        px={'1'}
-                                    />
-                                </Tooltip>
-                            </Skeleton>
-                        </Link>
-                        <Link
-                            onClick={() => navigate('/categories')}
-                        >
-                            <Skeleton
-                                isLoaded={isLoaded}
-                                fitContent='true'
-                            >
-                                <Tooltip
-                                    label={'Categories'}
-                                    hasArrow
-                                    bg={'white'}
-                                    color={'black'}
-                                    placement={'right'}
-                                    closeOnClick={false}
+                                    <Skeleton
+                                        isLoaded={isLoaded}
+                                        fitContent='true'
+                                    >
+                                        <Tooltip
+                                            label={'Dashboard'}
+                                            hasArrow
+                                            bg={'white'}
+                                            color={'black'}
+                                            placement={'right'}
+                                            closeOnClick={false}
+                                        >
+                                            <IconButton
+                                                icon={<AiFillHome size={'25px'} />}
+                                                size={'sm'}
+                                                variant={'unstyled'}
+                                                color={'white'}
+                                                px={'1'}
+                                            />
+                                        </Tooltip>
+                                    </Skeleton>
+                                </Link>
+                                <Link
+                                    onClick={() => navigate('/transaction')}
                                 >
-                                    <IconButton
-                                        icon={<BiCategoryAlt size={'25px'} />}
-                                        size={'sm'}
-                                        variant={'unstyled'}
-                                        color={'white'}
-                                        px={'1'}
-                                    />
-                                </Tooltip>
-                            </Skeleton>
-                        </Link>
-                        <Link
-                            onClick={() => navigate('/employee')}
-                        >
-                            <Skeleton
-                                isLoaded={isLoaded}
-                                fitContent='true'
-                            >
-                                <Tooltip
-                                    label={'Employee'}
-                                    hasArrow
-                                    bg={'white'}
-                                    color={'black'}
-                                    placement={'right'}
-                                    closeOnClick={false}
-                                >
-                                    <IconButton
-                                        icon={<IoIosPeople size={'25px'} />}
-                                        size={'sm'}
-                                        variant={'unstyled'}
-                                        color={'white'}
-                                        px={'1'}
-                                    />
-                                </Tooltip>
-                            </Skeleton>
-                        </Link>
-                        <Link
-                            onClick={() => navigate('/dashboard')}
-                        >
-                            <Skeleton
-                                isLoaded={isLoaded}
-                                fitContent='true'
-                            >
-                                <Tooltip
-                                    label={'Report'}
-                                    hasArrow
-                                    bg={'white'}
-                                    color={'black'}
-                                    placement={'right'}
-                                    closeOnClick={false}
-                                >
-                                    <IconButton
-                                        icon={<FaRegChartBar size={'25px'} />}
-                                        size={'sm'}
-                                        variant={'unstyled'}
-                                        color={'white'}
-                                        px={'1'}
-                                    />
-                                </Tooltip>
-                            </Skeleton>
-                        </Link>
-                    </Flex>
+                                    <Skeleton
+                                        isLoaded={isLoaded}
+                                        fitContent='true'
+                                    >
+                                        <Tooltip
+                                            label={'Transaction'}
+                                            hasArrow
+                                            bg={'white'}
+                                            color={'black'}
+                                            placement={'right'}
+                                            closeOnClick={false}
+                                        >
+                                            <IconButton
+                                                icon={<FaMoneyBillTransfer size={'25px'} />}
+                                                size={'sm'}
+                                                variant={'unstyled'}
+                                                color={'white'}
+                                                px={'1'}
+                                            />
+                                        </Tooltip>
+                                    </Skeleton>
+                                </Link>
+                            </Flex>
+                        )
+                    }
                 </Flex>
                 {/* Footer */}
                 <Flex

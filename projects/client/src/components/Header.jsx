@@ -6,14 +6,12 @@ import {
     Skeleton,
     Input,
     InputGroup,
-    InputLeftAddon,
     IconButton,
     InputLeftElement,
-    Button,
     Menu,
     MenuButton,
     MenuList,
-    MenuItem
+    MenuItem,
 } from '@chakra-ui/react';
 import { useSelector } from 'react-redux';
 import { BsSearch } from 'react-icons/bs';
@@ -99,6 +97,8 @@ function Header(props) {
                 </Flex>
                 <Flex
                     gap={'6'}
+                    justifyContent={'center'}
+                    alignItems={'center'}
                 >
                     <Skeleton
                         isLoaded={isLoaded}
@@ -134,12 +134,21 @@ function Header(props) {
                                 placement={'top-end'}
                                 size={'sm'}
                             >
-                                <MenuButton>
-                                    <IconButton
-                                        icon={<BiFilterAlt size={'20px'} />}
-                                        size={'sm'}
-                                        rounded={'sm'}
-                                    />
+                                <MenuButton
+                                    bg={'gray.100'}
+                                    boxSize={'8'}
+                                    rounded={'sm'}
+                                >
+                                    <Flex
+                                        align={'center'}
+                                        justify={'center'}
+                                        h={'100%'}
+                                        w={'100%'}
+                                    >
+                                        <BiFilterAlt 
+                                            size={'20px'}
+                                        />
+                                    </Flex>
                                 </MenuButton>
                                 <MenuList>
                                     <MenuItem

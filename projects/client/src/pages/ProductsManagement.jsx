@@ -391,12 +391,19 @@ function ProductsManagement() {
                                             placement={'top-end'}
                                             size={'sm'}
                                         >
-                                            <MenuButton>
-                                                <IconButton
-                                                    icon={<BiFilterAlt size={'20px'} />}
-                                                    size={'sm'}
-                                                    rounded={'sm'}
-                                                />
+                                            <MenuButton
+                                                bg={'gray.100'}
+                                                boxSize={'8'}
+                                                rounded={'sm'}
+                                            >
+                                                <Flex
+                                                    align={'center'}
+                                                    justify={'center'}
+                                                    h={'100%'}
+                                                    w={'100%'}
+                                                >
+                                                    <BiFilterAlt size={'20px'} />
+                                                </Flex>
                                             </MenuButton>
                                             <MenuList>
                                                 <MenuItem
@@ -529,17 +536,20 @@ function ProductsManagement() {
                                                 totalData ?
                                                 printProduct()
                                                 :
-                                                <Flex
-                                                    position={'absolute'}
-                                                    top={'50%'}
-                                                    left={'50%'}
-                                                    transform={'translate(-50%, -50%)'}
-                                                >
-                                                    <Text>
-                                                        No Products Found
-                                                    </Text>
-                                                </Flex>
-
+                                                <Tr>
+                                                    <Td>
+                                                        <Flex
+                                                            position={'absolute'}
+                                                            top={'50%'}
+                                                            left={'50%'}
+                                                            transform={'translate(-50%, -50%)'}
+                                                        >
+                                                            <Text>
+                                                                No Products Found
+                                                            </Text>
+                                                        </Flex>
+                                                    </Td>
+                                                </Tr>
                                             }
                                         </Tbody>
                                     </Table>
