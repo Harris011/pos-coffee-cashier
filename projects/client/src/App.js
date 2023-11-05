@@ -11,6 +11,7 @@ import SideBar from './components/Sidebar';
 import DashBoard from './pages/DashBoard';
 import ProductsManagement from './pages/ProductsManagement';
 import CategoriesManagement from './pages/CategoriesManagement';
+import EmployeeManagement from './pages/EmployeeManagement';
 
 function App() {
   const dispatch = useDispatch();
@@ -62,6 +63,7 @@ function App() {
                   <Route path='/dashboard' element={<DashBoard/>} />
                   <Route path='/products' element={<ProductsManagement/>} />
                   <Route path='/categories' element={<CategoriesManagement/>} />
+                  <Route path='/employee' element={<EmployeeManagement/>} />
                 </Routes>
               </Box>
             </Flex>

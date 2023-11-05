@@ -4,8 +4,16 @@ import {
     Button,
     Flex,
     Text,
-    IconButton,
     Skeleton,
+    InputGroup,
+    InputLeftElement,
+    IconButton,
+    Input,
+    Menu,
+    MenuButton,
+    MenuList,
+    MenuItem,
+    useToast,
     Tr,
     Td,
     Th,
@@ -13,65 +21,62 @@ import {
     Table,
     Thead,
     Tbody,
-    Input,
-    InputGroup,
-    InputLeftElement,
-    Select,
-    InputRightAddon,
-    MenuButton,
-    Menu,
-    MenuList,
-    MenuItem,
-    useToast,
-    Switch
+    Switch,
 } from '@chakra-ui/react';
-import { AddIcon } from '@chakra-ui/icons';
 import axios from 'axios';
-import Pagination from '../components/Pagination';
+import { AddIcon } from '@chakra-ui/icons';
 import { BsSearch } from 'react-icons/bs';
 import { BiFilterAlt } from 'react-icons/bi';
-import AddProduct from '../components/AddProduct';
-import ProductDetails from '../components/ProductDetails';
+import Pagination from '../components/Pagination';
+import AddUser from '../components/AddUser';
+import UserDetails from '../components/UserDetails';
+import ResetPassword from '../components/ResetPassword';
 
-function ProductsManagement() {
+function EmployeeManagement() {
     const token = localStorage.getItem('coffee_login');
     const toast = useToast();
     const [isLoaded, setIsLoaded] = useState(false);
+    const [activeComponent, setActiveComponent] = useState('none');
     const [page, setPage] = useState(0);
     const [size, setSize] = useState(12);
-    const [sortby, setSortby] = useState('name');
+    const [sortby, setSortby] = useState('username');
     const [order, setOrder] = useState('ASC');
-    const [name, setName] = useState('');
-    const [category, setCategory] = useState('');
-    const [selectedOption, setSelectedOption] = useState('name');
-    const [productList, setProductList] = useState([]);
+    const [username, setUsername] = useState('');
+    const [userList, setUserList] = useState([]);
     const [totalData, setTotalData] = useState(0);
-    const [activeComponent, setActiveComponent] = useState('none');
-    const [selectedProduct, setSelectedProduct] = useState('');
-    const [productName, setProductName] = useState('');
-    const [productCategory, setProductCategory] = useState('');
-    const [productStock, setProductStock] = useState('');
-    const [productPrice, setProductPrice] = useState('');
-    const [productImage, setProductImage] = useState('');
+    const [selectedUser, setSelectedUser] = useState('');
+    const [selectedUserEmail, setSelectedUserEmail] = useState('');
+    const [selectedUserName, setSelectedUserName] = useState('');
+    const [selectedUserRole, setSelectedUserRole] = useState('');
+    const [selectedUserRoles, setSelectedUserRoles] = useState('');
+    const [userCount, setUserCount] = useState([]);
+    const [activeAdmins, setActiveAdmins] = useState(0);
+    const [inactiveAdmins, setInactiveAdmins] = useState(0);
+    const [activeCashier, setActiveCashier] = useState(0);
+    const [inactiveCashier, setInactiveCashier] = useState(0);
 
-    let getProduct = async () => {
+    let getUser = async () => {
         try {
-            let response = await axios.get(`http://localhost:8000/api/product/list?page=${page}&size=${size}&sortby=${sortby}&order=${order}&name=${name}&category=${category}`, {
+            let response = await axios.get(`http://localhost:8000/api/user/user-list?page=${page}&size=${size}&sortby=${sortby}&order=${order}&username=${username}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
-            });
-            setProductList(response.data.data);
+            })
+            setUserList(response.data.data);
             setTotalData(response.data.datanum);
         } catch (error) {
-            console.log('error');
+            console.log(error);
         }
     }
 
-    // Delete product
+    useEffect(() => {
+        getUser();
+    }, [page, size, sortby, order, username]);
+
+    // Delete user
     const onBtnDelete = async (uuid, isDeleted) => {
         try {
-            let response = await axios.patch(`http://localhost:8000/api/product/delete/${uuid}`, {
+            let response = await axios.patch(`http://localhost:8000/api/user/delete/${uuid}`, {
                 isDeleted: isDeleted
             }, {
                 headers: {
@@ -81,19 +86,20 @@ function ProductsManagement() {
             if (response.data.success) {
                 toast({
                     position: 'top',
-                    title: 'Product status',
+                    title: 'User status',
                     description: response.data.message,
                     status: 'info',
                     duration: 2000,
                     isClosable: true
                 })
-                getProduct();
+                countActiveInactive();
+                getUser();
             }
         } catch (error) {
             console.log(error);
             toast({
                 position: 'top',
-                title: 'Product status',
+                title: 'User status',
                 description: error.response.data.message,
                 status: 'error',
                 duration: 2000,
@@ -102,17 +108,9 @@ function ProductsManagement() {
         }
     }
 
-    useEffect(() => {
-        getProduct();
-    }, [page, size, sortby, order, name, category, selectedOption]);
-
-    const printProduct = () => {
-        return productList.map((val, idx) => {
+    const printUser = () => {
+        return userList.map((val, idx) => {
             const itemNumber = (page * size) + idx + 1;
-            const formattedPrice = val.price.toLocaleString('id-ID', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            });
             return (
                 <Tr
                     key={val.uuid}
@@ -128,59 +126,72 @@ function ProductsManagement() {
                             #{itemNumber}
                         </Flex>
                     </Td>
-                    <Td>
+                    <Td
+                        textAlign={'start'}
+                        w={'115px'}
+                    >
+                        <Flex
+                            justify={'start'}
+                            alignItems={'center'}
+                            w={'115px'}
+                        >
+                            <Text
+                                as={'button'}
+                                onClick={() => {
+                                    setActiveComponent('details');
+                                    setSelectedUser(val.uuid);
+                                    setSelectedUserEmail(val.email);
+                                    setSelectedUserName(val.username);
+                                    setSelectedUserRole(val.role_id);
+                                    setSelectedUserRoles(val.role.role);
+                                }}
+                                overflow={'hidden'}
+                                whiteSpace={'nowrap'}
+                                textOverflow={'ellipsis'}
+                                display={'block'}
+                            >
+                                {val.username}
+                            </Text>
+                        </Flex>
+                    </Td>
+                    <Td
+                        textAlign={'start'}
+                        w={'115px'}
+                    >
                         <Flex
                             justifyContent={'start'}
                             alignItems={'center'}
-                            w={'120px'}
+                            w={'115px'}
                             overflow={'hidden'}
                             whiteSpace={'nowrap'}
                             textOverflow={'ellipsis'}
                             display={'block'}
                         >
-                            {val.name}
+                            {val.email}
                         </Flex>
                     </Td>
                     <Td
-                        textAlign={'center'}
-                        px={'1'}
+                        textAlign={'start'}
                     >
                         <Flex
                             justifyContent={'start'}
                             alignItems={'center'}
-                            w={'120px'}
+                            w={'50px'}
                         >
-                            {val.category.category}
-                        </Flex>
-                    </Td>
-                    <Td>
-                        <Flex
-                            justifyContent={'center'}
-                            alignItems={'center'}
-                        >
-                            {val.stock}
-                        </Flex>
-                    </Td>
-                    <Td>
-                        <Flex
-                            justifyContent={'start'}
-                            alignItems={'center'}
-                            w={'60px'}
-                        >
-                            {formattedPrice}
+                            {val.role.role}
                         </Flex>
                     </Td>
                     <Td
                         textAlign={'center'}
+                        w={'80px'}
                     >
                         <Flex
-                            flexDir={'row'}
-                            w={'80px'}
                             justifyContent={'space-between'}
+                            w={'80px'}
                         >
                             <Switch
-                                colorScheme='red'
                                 size={'sm'}
+                                colorScheme={'red'}
                                 isChecked={val.isDeleted}
                                 onChange={() => {
                                     onBtnDelete(val.uuid, !val.isDeleted)
@@ -190,8 +201,8 @@ function ProductsManagement() {
                                 color={val.isDeleted ? 'red.500' : 'green.500'}
                             >
                                 <Text
-                                    letterSpacing={'tight'}
                                     fontSize={'sm'}
+                                    letterSpacing={'tight'}
                                 >
                                     {val.isDeleted ? 'Inactive' : 'Active'}
                                 </Text>
@@ -201,42 +212,86 @@ function ProductsManagement() {
                     <Td
                         textAlign={'center'}
                     >
-                        <Flex
-                            justifyContent={'center'}
+                        <Text
+                            as={'button'}
+                            onClick={() => {
+                                setActiveComponent('reset');
+                                setSelectedUser(val.uuid);
+                                setSelectedUserEmail(val.email);
+                                setSelectedUserName(val.username);
+                                setSelectedUserRoles(val.role.role);
+                            }}
+                            letterSpacing={'tight'}
+                            fontSize={'xs'}
+                            fontWeight={'hairline'}
                         >
-                            <Text
-                                as={'button'}
-                                onClick={() => {
-                                    setActiveComponent('details');
-                                    setSelectedProduct(val.uuid);
-                                    setProductName(val.name);
-                                    setProductCategory(val.category.id);
-                                    setProductStock(val.stock);
-                                    setProductPrice(val.price);
-                                    setProductImage(val.product_image);
-                                }}
-                            >
-                                Detail
-                            </Text>
-                        </Flex>
+                            Reset password
+                        </Text>
                     </Td>
                 </Tr>
             )
         })
     }
 
+    let countActiveInactive = async () => {
+        try {
+            let response = await axios.get(`http://localhost:8000/api/user/count`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            setUserCount(response.data.data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const countUsers = () => {
+        let activeAdminsCount = 0;
+        let inactiveAdminsCount = 0;
+        let activeCashiersCount = 0;
+        let inactiveCashiersCount = 0;
+        return userCount.forEach((val)=> {
+            if (val.role_id === 1) {
+                if (val.isDeleted) {
+                    inactiveAdminsCount++
+                } else {
+                    activeAdminsCount++
+                }
+            } else if (val.role_id === 2) {
+                if (val.isDeleted) {
+                    inactiveCashiersCount++
+                } else {
+                    activeCashiersCount++
+                }
+            }
+            setActiveAdmins(activeAdminsCount)
+            setInactiveAdmins(inactiveAdminsCount)
+            setActiveCashier(activeCashiersCount)
+            setInactiveCashier(inactiveCashiersCount)
+        })
+    };
+
+    useEffect(() => {
+        countActiveInactive();
+    }, []);
+
+    useEffect(() => {
+        countUsers();
+    }, [userCount]);
+
     const paginate = pageNumbers => {
         setPage(pageNumbers)
     }
 
     const onSuccess = () => {
-        getProduct();
+        countActiveInactive();
+        getUser();
     }
 
     const handleCloseComponent = () => {
         setActiveComponent('none');
     }
-
 
     useEffect(() => {
         const delay = setTimeout(() => {
@@ -254,16 +309,16 @@ function ProductsManagement() {
             w={'94vw'}
         >
             <Flex
-                flex={'row'}
+                flexDir={'row'}
                 justifyContent={'space-between'}
             >
                 <Flex
                     h={'100vh'}
-                    w={'75%'}
+                    w={'70.5vw'}
                     flexDir={'column'}
                     px={'6'}
                 >
-                    {/* Title & Add Product */}
+                    {/* Title & Add user */}
                     <Flex
                         h={'8vh'}
                         flexDir={'column'}
@@ -284,7 +339,7 @@ function ProductsManagement() {
                                     fontSize={'xl'}
                                     fontWeight={'semibold'}
                                 >
-                                    Products
+                                    Employee
                                 </Text>
                             </Skeleton>
                             <Skeleton
@@ -305,12 +360,12 @@ function ProductsManagement() {
                                     bg={'black'}
                                     onClick={() => setActiveComponent('add')}
                                 >
-                                    Add Product
+                                    Add new user
                                 </Button>
                             </Skeleton>
                         </Flex>
                     </Flex>
-                    {/* Search and sort product */}
+                    {/* Search and sort user */}
                     <Box
                         h={'8vh'}
                     >
@@ -325,7 +380,7 @@ function ProductsManagement() {
                                 isLoaded={isLoaded}
                             >
                                 <Text>
-                                    Product List ({totalData})
+                                    Employee List ({totalData})
                                 </Text>
                             </Skeleton>
                             <Flex
@@ -347,39 +402,12 @@ function ProductsManagement() {
                                                 />
                                             </InputLeftElement>
                                             <Input
-                                                placeholder={'Search by'}
+                                                placeholder={'Search'}
                                                 letterSpacing={'tight'}
                                                 variant={'filled'}
                                                 type={'search'}
-                                                value={selectedOption === 'category' ? category : name}
-                                                onChange={(e) => {
-                                                  if (selectedOption === 'category') {
-                                                      setCategory(e.target.value);
-                                                } else {
-                                                      setName(e.target.value);
-                                                  }
-                                                }}
+                                                onChange={(e) => setUsername(e.target.value)}
                                             />
-                                            <InputRightAddon>
-                                                <Select
-                                                    size={'xs'}
-                                                    variant={'unstyled'}
-                                                    color={'black'}
-                                                    w={'100%'}
-                                                    onChange={(e) => setSelectedOption(e.target.value)}
-                                                >
-                                                    <option
-                                                        value={'name'}
-                                                    >
-                                                        Product
-                                                    </option>
-                                                    <option
-                                                        value={'category'}
-                                                    >
-                                                        Category
-                                                    </option>
-                                                </Select>
-                                            </InputRightAddon>
                                         </InputGroup>
                                     </Box>
                                 </Skeleton>
@@ -401,7 +429,7 @@ function ProductsManagement() {
                                             <MenuList>
                                                 <MenuItem
                                                     onClick={() => {
-                                                        setSortby('name')
+                                                        setSortby('username')
                                                         setOrder('ASC')
                                                     }}
                                                 >
@@ -413,7 +441,7 @@ function ProductsManagement() {
                                                 </MenuItem>
                                                 <MenuItem
                                                     onClick={() => {
-                                                        setSortby('name')
+                                                        setSortby('username')
                                                         setOrder('DESC')
                                                     }}
                                                 >
@@ -421,30 +449,6 @@ function ProductsManagement() {
                                                         fontSize={'sm'}
                                                     >
                                                         Sort by Name: (Z - A)
-                                                    </Text>
-                                                </MenuItem>
-                                                <MenuItem
-                                                    onClick={() => {
-                                                        setSortby('price')
-                                                        setOrder('ASC')
-                                                    }}
-                                                >
-                                                    <Text
-                                                        fontSize={'sm'}
-                                                    >
-                                                        Sort by Price: (low - high)
-                                                    </Text>
-                                                </MenuItem>
-                                                <MenuItem
-                                                    onClick={() => {
-                                                        setSortby('price')
-                                                        setOrder('DESC')
-                                                    }}
-                                                >
-                                                    <Text
-                                                        fontSize={'sm'}
-                                                    >
-                                                        Sort by Price: (high - low)
                                                     </Text>
                                                 </MenuItem>
                                             </MenuList>
@@ -494,40 +498,29 @@ function ProductsManagement() {
                                                 <Th
                                                     textAlign={'start'}
                                                 >
-                                                    Product Name
-                                                </Th>
-                                                <Th
-                                                    textAlign={'start'}
-                                                    px={'1'}
-                                                >
-                                                    Category
-                                                </Th>
-                                                <Th
-                                                    textAlign={'center'}
-                                                >
-                                                    Stock
+                                                    Username
                                                 </Th>
                                                 <Th
                                                     textAlign={'start'}
                                                 >
-                                                    Price (Rp)
+                                                    Email
+                                                </Th>
+                                                <Th
+                                                    textAlign={'start'}
+                                                >
+                                                    Role
                                                 </Th>
                                                 <Th
                                                     textAlign={'center'}
                                                 >
                                                     Status
                                                 </Th>
-                                                <Th
-                                                    textAlign={'center'}
-                                                >
-                                                    Product Details
-                                                </Th>
                                             </Tr>
                                         </Thead>
                                         <Tbody>
                                             {
                                                 totalData ?
-                                                printProduct()
+                                                printUser()
                                                 :
                                                 <Flex
                                                     position={'absolute'}
@@ -536,7 +529,7 @@ function ProductsManagement() {
                                                     transform={'translate(-50%, -50%)'}
                                                 >
                                                     <Text>
-                                                        No Products Found
+                                                        No Employee Found
                                                     </Text>
                                                 </Flex>
 
@@ -568,7 +561,7 @@ function ProductsManagement() {
                                         <Text
                                             textAlign={'center'}
                                         >
-                                            {Math.min(productList.length)}
+                                            {Math.min(userList.length)}
                                         </Text>
                                     </Flex>
                                     <Text
@@ -591,11 +584,11 @@ function ProductsManagement() {
                         </Flex>
                     </Flex>
                 </Flex>
-                {/* Add Product & Product Detail */}
+                {/* Add user & user Details */}
                 <Flex
                     bg={'black'}
-                    w={'25%'}
                     h={'100vh'}
+                    w={'23.5vw'}
                     flexDir={'column'}
                     px={'2'}
                 >
@@ -632,7 +625,7 @@ function ProductsManagement() {
                                             color={'white'}
                                             textAlign={'start'}
                                         >
-                                            Create New Product
+                                            Create New Employee
                                         </Text>
                                     </Skeleton>
                                 )
@@ -647,14 +640,29 @@ function ProductsManagement() {
                                             color={'white'}
                                             textAlign={'start'}
                                         >
-                                            Product Detail
+                                            User Details
+                                        </Text>
+                                    </Skeleton>
+                                )
+                            }
+                            {
+                                activeComponent === 'reset' && (
+                                    <Skeleton
+                                        isLoaded={isLoaded}
+                                        w={'max-content'}
+                                    >
+                                        <Text
+                                            color={'white'}
+                                            textAlign={'start'}
+                                        >
+                                            Reset Password
                                         </Text>
                                     </Skeleton>
                                 )
                             }
                         </Box>
                     </Flex>
-                    {/* add & detail product component */}
+                    {/* component */}
                     <Box
                         h={'92vh'}
                     >
@@ -671,37 +679,188 @@ function ProductsManagement() {
                             {
                             activeComponent === 'none' && 
                                 (
-                                    <Flex>
-                                        <Skeleton
-                                            isLoaded={isLoaded}
+                                    <Flex
+                                        flexDir={'column'}
+                                        h={'90vh'}
+                                        w={'100%'}
+                                        px={'2'}
+                                        pt={'2'}
+                                        gap={'1.5'}
+                                    >
+                                        <Flex
+                                            gap={'1'}
+                                            w={'100%'}
                                         >
-                                            <Text
-                                                color={'white'}
+                                            <Skeleton
+                                                isLoaded={isLoaded}
                                             >
-                                                No Items
-                                            </Text>
-                                        </Skeleton>
+                                                <Text
+                                                    color={'white'}
+                                                    fontSize={'sm'}
+                                                    w={'110px'}
+                                                    textAlign={'start'}
+                                                >
+                                                    Active Admins
+                                                </Text>
+                                            </Skeleton>
+                                            <Skeleton
+                                                isLoaded={isLoaded}
+                                            >
+                                                <Box
+                                                    w={'100%'}
+                                                >
+                                                    <Text
+                                                        textAlign={'start'}
+                                                        color={'white'}
+                                                        fontSize={'sm'}
+                                                        overflow={'hidden'}
+                                                        whiteSpace={'nowrap'}
+                                                        textOverflow={'ellipsis'}
+                                                        display={'block'}
+                                                    >
+                                                        : {activeAdmins}
+                                                    </Text>
+                                                </Box>
+                                            </Skeleton>
+                                        </Flex>
+                                        <Flex
+                                            gap={'1'}
+                                            w={'100%'}
+                                        >
+                                            <Skeleton
+                                                isLoaded={isLoaded}
+                                            >
+                                                <Text
+                                                    color={'white'}
+                                                    fontSize={'sm'}
+                                                    w={'110px'}
+                                                    textAlign={'start'}
+                                                >
+                                                    Inactive Admins
+                                                </Text>
+                                            </Skeleton>
+                                            <Skeleton
+                                                isLoaded={isLoaded}
+                                            >
+                                                <Box
+                                                    w={'100%'}
+                                                >
+                                                    <Text
+                                                        textAlign={'start'}
+                                                        color={'white'}
+                                                        fontSize={'sm'}
+                                                        overflow={'hidden'}
+                                                        whiteSpace={'nowrap'}
+                                                        textOverflow={'ellipsis'}
+                                                        display={'block'}
+                                                    >
+                                                        : {inactiveAdmins}
+                                                    </Text>
+                                                </Box>
+                                            </Skeleton>
+                                        </Flex>
+                                        <Flex
+                                            gap={'1'}
+                                            w={'100%'}
+                                        >
+                                            <Skeleton
+                                                isLoaded={isLoaded}
+                                            >
+                                                <Text
+                                                    color={'white'}
+                                                    fontSize={'sm'}
+                                                    w={'110px'}
+                                                    textAlign={'start'}
+                                                >
+                                                    Active Cashier
+                                                </Text>
+                                            </Skeleton>
+                                            <Skeleton
+                                                isLoaded={isLoaded}
+                                            >
+                                                <Box
+                                                    w={'100%'}
+                                                >
+                                                    <Text
+                                                        textAlign={'start'}
+                                                        color={'white'}
+                                                        fontSize={'sm'}
+                                                        overflow={'hidden'}
+                                                        whiteSpace={'nowrap'}
+                                                        textOverflow={'ellipsis'}
+                                                        display={'block'}
+                                                    >
+                                                        : {activeCashier}
+                                                    </Text>
+                                                </Box>
+                                            </Skeleton>
+                                        </Flex>
+                                        <Flex
+                                            gap={'1'}
+                                            w={'100%'}
+                                        >
+                                            <Skeleton
+                                                isLoaded={isLoaded}
+                                            >
+                                                <Text
+                                                    color={'white'}
+                                                    fontSize={'sm'}
+                                                    w={'110px'}
+                                                    textAlign={'start'}
+                                                >
+                                                    Inactive Cashier
+                                                </Text>
+                                            </Skeleton>
+                                            <Skeleton
+                                                isLoaded={isLoaded}
+                                            >
+                                                <Box
+                                                    w={'100%'}
+                                                >
+                                                    <Text
+                                                        textAlign={'start'}
+                                                        color={'white'}
+                                                        fontSize={'sm'}
+                                                        overflow={'hidden'}
+                                                        whiteSpace={'nowrap'}
+                                                        textOverflow={'ellipsis'}
+                                                        display={'block'}
+                                                    >
+                                                        : {inactiveCashier}
+                                                    </Text>
+                                                </Box>
+                                            </Skeleton>
+                                        </Flex>
                                     </Flex>
                                 )
                             }
                             {
                                 activeComponent === 'add' && 
-                                <AddProduct
+                                <AddUser
                                     handleCloseComponent={handleCloseComponent}
                                     onSuccess={onSuccess}
                                 />
                             }
                             {
                                 activeComponent === 'details' && 
-                                <ProductDetails
+                                <UserDetails
                                     handleCloseComponent={handleCloseComponent}
                                     onSuccess={onSuccess}
-                                    uuid={selectedProduct}
-                                    name={productName}
-                                    category={productCategory}
-                                    stock={productStock}
-                                    price={productPrice}
-                                    image={productImage}
+                                    uuid={selectedUser}
+                                    email={selectedUserEmail}
+                                    username={selectedUserName}
+                                    roleId={selectedUserRole}
+                                />
+                            }
+                            {
+                                activeComponent === 'reset' && 
+                                <ResetPassword
+                                    handleCloseComponent={handleCloseComponent}
+                                    onSuccess={onSuccess}
+                                    uuid={selectedUser}
+                                    email={selectedUserEmail}
+                                    username={selectedUserName}
+                                    role={selectedUserRoles}
                                 />
                             }
                         </Flex>
@@ -712,4 +871,4 @@ function ProductsManagement() {
      );
 }
 
-export default ProductsManagement;
+export default EmployeeManagement;

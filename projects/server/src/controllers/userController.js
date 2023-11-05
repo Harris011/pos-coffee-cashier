@@ -20,7 +20,7 @@ module.exports = {
                     }
                 ]
             });
-            console.log('User that login :', getUser);
+            
             // check email
             if (getUser.length > 0) {
                 // check isDeleted
@@ -75,7 +75,6 @@ module.exports = {
     },
     keeplogin: async (req, res, next) => {
         try {
-            console.log("Decrypt token :", req.decrypt);
             let getUser = await model.users.findAll({
                 where: {
                     uuid: req.decrypt.uuid
@@ -86,9 +85,8 @@ module.exports = {
                         attributes: ['role']
                     }
                 ]
-            })
+            });
 
-            console.log("user keeplogin :", getUser);
             getUser[0].dataValues.role = getUser[0].dataValues.role.role;
             let {
                 uuid,
@@ -123,8 +121,6 @@ module.exports = {
                 }
             });
 
-            console.log('Check user :', checkUser);
-
             if (checkUser.length == 0) {
                 if (req.body.password == req.body.confirmationPassword){
                     delete req.body.confirmationPassword;
@@ -155,10 +151,9 @@ module.exports = {
                 } else {
                     return res.status(400).send({
                         success: false,
-                        message: 'The password do not match, Please try again.'
+                        message: 'The password and confirmation do not match, Please try again.'
                     })
                 }
-
             } else {
                 return res.status(400).send({
                     success: false,
@@ -167,6 +162,256 @@ module.exports = {
             }
         } catch (error) {
             await ormTransaction.rollback();
+            console.log(error);
+            next(error);
+        }
+    },
+    edit: async (req, res, next) => {
+        try {
+            let checkUser = await model.users.findAll({
+                where: {
+                    uuid: req.params.uuid
+                }
+            })
+
+            if (checkUser.length > 0) {
+                let checkEmail = await model.users.findAll({
+                    where: {
+                        email: req.body.email,
+                        uuid: {[sequelize.Op.ne]: req.params.uuid}
+                    }
+                })
+                
+                if (checkEmail.length == 0) {
+                    const {
+                        email,
+                        username,
+                        role_id
+                    } = req.body
+
+                    const updateUser = await model.users.update({
+                        email,
+                        username,
+                        role_id
+                    }, {
+                        where: {
+                            uuid: req.params.uuid
+                        }
+                    })
+
+                    if (updateUser == 1) {
+                        res.status(200).send({
+                            success: true,
+                            message: 'User information updated successfully',
+                            data: updateUser
+                        })
+                    } else {
+                        res.status(200).send({
+                            success: true,
+                            message: 'No user information changed',
+                            data: updateUser
+                        })
+                    }
+                    
+                } else {
+                    res.status(400).send({
+                        success: false,
+                        message: 'Email already exists, cahange canceled'
+                    })
+                }
+            } else {
+                res.status(400).send({
+                    success: true,
+                    message: 'User not found'
+                })
+            }
+        } catch (error) {
+            console.log(error);
+            next(error);
+            res.status(500).send({
+                success: false,
+                message: 'An error occurred while processing your request.',
+                error: error.message
+            })
+        }
+    },
+    drop: async (req, res, next) => {
+        try {
+            let checkUser = await model.users.findAll({
+                where: {
+                    uuid: req.params.uuid
+                }
+            });
+
+            if (checkUser.length > 0) {
+                if (checkUser[0].dataValues.isDeleted == false) {
+                    await model.users.update({isDeleted: 1}, {
+                        where: {
+                            uuid: req.params.uuid
+                        }
+                    })
+    
+                    res.status(200).send({
+                        success: true,
+                        message: 'This account is now inactive'
+                    })
+                } else {
+                    await model.users.update({isDeleted: 0}, {
+                        where: {
+                            uuid: req.params.uuid
+                        }
+                    })
+    
+                    res.status(200).send({
+                        success: true,
+                        message: 'This account is now active'
+                    })
+                }
+            } else {
+                res.status(400).send({
+                    success: false,
+                    message: 'User not found'
+                })
+            }
+        } catch (error) {
+            console.log(error);
+            next(error);
+        }
+    },
+    reset: async (req, res, next) => {
+        try {
+            let checkUser = await model.users.findAll({
+                where: {
+                    uuid: req.params.uuid
+                }
+            })
+
+            if (checkUser.length > 0) {
+                if (req.body.password && req.body.confirmationPassword) {
+                    if (req.body.password === req.body.confirmationPassword) {
+                        newPassword = bcrypt.hashSync(req.body.password, salt);
+    
+                        await model.users.update({
+                            password: newPassword
+                        }, {
+                            where: {
+                                uuid: req.params.uuid
+                            }
+                        })
+                        return res.status(200).send({
+                            success: true,
+                            message: 'Password has been change successful'
+                        })
+                    } else {
+                        return res.status(400).send({
+                            success: false,
+                            message: 'Password and confiramtion password do not match'
+                        })
+                    }
+                } else {
+                    return res.status(400).send({
+                        success: false,
+                        message: 'Please complete required fields'
+                    })
+                }
+            } else {
+                return res.status(400).send({
+                    success: false,
+                    message: 'User not found'
+                })
+            }
+        } catch (error) {
+            console.log(error);
+            next(error);
+        }
+    },
+    userList: async (req, res, next) => {
+        try {
+            let {
+                page,
+                size,
+                sortby,
+                order,
+                username,
+                role_id
+            } = req.query;
+
+            if (!page) {
+                page = 0;
+            }
+
+            if (!size) {
+                size = 10;
+            }
+
+            if (!sortby) {
+                sortby= 'username';
+            }
+
+            if (!order) {
+                order = 'ASC';
+            }
+
+            if (!username) {
+                username = '';
+            }
+
+            if (!role_id) {
+                role_id = '';
+            }
+
+            let getUser = await model.users.findAndCountAll({
+                attributes: ['uuid', 'username', 'email', 'role_id', 'isDeleted'],
+                where: {
+                    username: {[sequelize.Op.like]: `%${username}%`}
+                },
+                include: [
+                    {
+                        model: model.role,
+                        attributes: ['role']
+                    }
+                ],
+                offset: parseInt(page * size),
+                limit: parseInt(size),
+                order: [[sortby, order]]
+            })
+
+            return res.status(200).send({
+                data: getUser.rows,
+                totalPage: Math.ceil(getUser.count / size),
+                datanum: getUser.count
+            })
+
+        } catch (error) {
+            console.log(error);
+            next(error);
+        }
+    },
+    roleList: async (req, res, next) => {
+        try {
+            let getRole = await model.role.findAll({
+                attributes: ['id', 'role']
+            })
+            return res.status(200).send({
+                success: true,
+                data: getRole
+            })
+        } catch (error) {
+            console.log(error);
+            next(error);
+        }
+    }, 
+    userCount: async (req, res, next) => {
+        try {
+            let getUser = await model.users.findAll({
+                attributes: ['uuid', 'username', 'role_id', 'isDeleted']
+            })
+            return res.status(200).send({
+                success: true,
+                data: getUser,
+                datanum: getUser.count
+            })
+        } catch (error) {
             console.log(error);
             next(error);
         }

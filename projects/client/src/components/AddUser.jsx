@@ -1,90 +1,79 @@
-import React, { useEffect, useRef, useState }  from 'react';
-import {
+import React, { useEffect, useState } from 'react';
+import { 
     Box,
     Flex,
     FormControl,
     FormLabel,
     Input,
-    Image,
     Button,
     Select,
-    IconButton,
-    Tooltip,
     Skeleton,
     useToast,
+    InputGroup,
+    InputRightAddon,
 } from '@chakra-ui/react';
-import axios from 'axios';
-import { FaUpload } from 'react-icons/fa';
+import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
 import PulseLoader from "react-spinners/PulseLoader";
+import axios from 'axios';
 
-function ProductDetails(props) {
+function AddUser(props) {
     let token = localStorage.getItem('coffee_login');
+    const toast = useToast();
     const [isLoaded, setIsLoaded] = useState(false);
     const [loading, setLoading] = useState(false);
-    const toast = useToast();
-    const inputFile = useRef(null);
-    const [name, setName] = useState(props.name);
-    const [price, setPrice] = useState(props.price);
-    const [stock, setStock] = useState(props.stock);
-    const [category, setCategory] = useState(props.category);
-    const [productImage, setProductImage] = useState(null);
-
+    const [visible, setVisible] = useState('password');
+    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
+    const [roleId, setRoleId] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmationPassword, setConfirmationPassword] = useState('');
+    
     const handleClose = () => {
-        setName(props.name);
-        setPrice(props.price);
-        setStock(props.stock);
-        setCategory(props.category);
+        setEmail('');
+        setUsername('');
+        setRoleId('');
+        setPassword('');
+        setConfirmationPassword('');
         props.handleCloseComponent();
     }
 
-    useEffect(() => {
-        inputFile.current = document.createElement('input');
-        inputFile.current.type='file';
-        inputFile.current.style.display= 'none';
-        document.body.appendChild(inputFile.current);
-    }, []);
+    const handleVisible = () => {
+        if (visible == 'password') {
+            setVisible('text');
+        } else {
+            setVisible('password');
+        }
+    }
 
-    // Edit Product
-    const onBtnEdit = async () => {
+    const onBtnCreate = async () => {
         try {
-            let formData = new FormData();
             if (!token) {
                 return toast({
                     position: 'top',
-                    title: 'Edit product',
+                    title: 'Create new product',
                     description: 'unauthorized access',
                     duration: 2000,
                     isClosable: true
                 })
             }
-            if (name == '' || price == '' || stock == '' || category == '') {
+            if (email == '' || username == '' || roleId == '' || password == '' || confirmationPassword == '') {
                 return toast({
                     position: 'top',
-                    title: 'Edit product',
+                    title: 'Create new product',
                     description: 'Please complete all required fields',
                     status: 'warning',
                     duration: 2000,
                     isClosable: true
                 })
             }
-
-            formData.append(
-                "data",
-                JSON.stringify({
-                    name: name,
-                    price: price,
-                    stock: stock,
-                    category_id: category
-                })
-            );
-
-            if (productImage != null) {
-                formData.append('images', productImage);
-            }
-
             setLoading(true);
-
-            let response = await axios.patch(`http://localhost:8000/api/product/edit/${props.uuid}`, formData, {
+            let response = await axios.post(`http://localhost:8000/api/user/register`, {
+                email: email,
+                username: username,
+                role_id: roleId,
+                password: password,
+                confirmationPassword: confirmationPassword
+            }, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -93,13 +82,12 @@ function ProductDetails(props) {
             if (response.data.success == true) {
                 toast({
                     position: 'top',
-                    title: 'Edit product',
+                    title: 'Create new Employee',
                     description: response.data.message,
                     status: 'success',
                     duration: 2000,
                     isClosable: true
                 })
-                handleClose();
                 setTimeout(() => {
                     props.onSuccess();
                     handleClose();
@@ -109,49 +97,48 @@ function ProductDetails(props) {
                 setTimeout(() => {
                     toast({
                         position: 'top',
-                        title: 'Edit product',
-                        description: 'Fail to edit product',
+                        title: 'Create new category',
+                        description: 'Fail to create new Employee',
                         status: 'error',
                         duration: 2000,
                         isClosable: true
                     })
-                }, 1500)
-                setLoading(false);
+                })
             }
         } catch (error) {
             console.log(error);
             setTimeout(() => {
                 toast({
                     position: 'top',
-                    title: 'Edit product',
+                    title: 'Create new category',
                     description: error.response.data.message,
                     status: 'error',
                     duration: 2000,
                     isClosable: true
-                })
+                });
             }, 1500)
             setLoading(false);
         }
     }
 
-    // Get Category
-    const [categoryList, setCategoryList] = useState([]);
-
-    const getCategory = async () => {
+    // Get Role
+    const [roleList, setRoleList] = useState([]);
+    
+    const getRole = async () => {
         try {
-            let response = await axios.get(`http://localhost:8000/api/category/category-list`, {
+            let response = await axios.get(`http://localhost:8000/api/user/role-list`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
-            });
-            setCategoryList(response.data.data);
+            })
+            setRoleList(response.data.data);
         } catch (error) {
             console.log(error);
         }
     }
 
     useEffect(() => {
-        getCategory();
+        getRole();
     }, []);
 
     useEffect(() => {
@@ -167,10 +154,11 @@ function ProductDetails(props) {
     return ( 
         <Box
             h={'90vh'}
-            px={'1.5'}
-            w={'100%'}
+            w={'23.5vw'}
             rounded={'xl'}
+            px={'1.5'}
         >
+            {/* add user */}
             <Flex
                 flexDir={'column'}
                 justifyContent={'space-between'}
@@ -182,62 +170,6 @@ function ProductDetails(props) {
                     h={'80vh'}
                     pt={'2'}
                 >
-                    <Box
-                        border={'1px'}
-                        borderColor={'white'}
-                        position={'relative'}
-                        mt={'0.5'}
-                        rounded={'md'}
-                        w={{lg:'210px', xl:'250px'}}
-                        h={{lg:'150px', xl:'150px'}}
-                    >
-                        <Skeleton
-                            isLoaded={isLoaded}
-                            rounded={'md'}
-                        >
-                            <Image
-                                objectFit={'cover'}
-                                w={'250px'}
-                                h={'150px'}
-                                src={productImage ? URL.createObjectURL(productImage) : `http://localhost:8000/api${props.image}`}
-                                alt='Product Image'
-                                color={'white'}
-                                rounded={'md'}
-                            />
-                        </Skeleton>
-                        <Skeleton
-                            isLoaded={isLoaded}
-                        >
-                            <Tooltip
-                                label={'Upoad Image'}
-                                hasArrow
-                                bg={'black'}
-                                color={'white'}
-                                placement={'left'}
-                                closeOnClick={false}
-                                fontSize={'xs'}
-                            >
-                                <IconButton 
-                                    icon={<FaUpload/>}
-                                    position={'absolute'}
-                                    top={'1'}
-                                    right={'1'}
-                                    size={'xs'}
-                                    color={'white'}
-                                    bg={'gray.700'}
-                                    onClick={() => inputFile.current.click()}
-                                />
-                            </Tooltip>
-                            <Input
-                                type={'file'}
-                                ref={inputFile}
-                                onChange={(e) => {
-                                    setProductImage(e.target.files[0])
-                                }}
-                                display={'none'}
-                            />
-                        </Skeleton>
-                    </Box>
                     <Box
                         w={'90%'}
                         py={'1'}
@@ -251,7 +183,7 @@ function ProductDetails(props) {
                                     fontSize={'sm'}
                                     color={'white'}
                                 >
-                                    Product name
+                                    User name
                                 </FormLabel>
                             </Skeleton>
                             <Skeleton
@@ -264,9 +196,8 @@ function ProductDetails(props) {
                                     variant={'outline'}
                                     type='text'
                                     letterSpacing={'tight'}
-                                    placeholder={`Enter the Product's Name`}
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
+                                    placeholder={`Enter the User's Name`}
+                                    onChange={(e) => setUsername(e.target.value)}
                                 />
                             </Skeleton>
                         </FormControl>
@@ -280,28 +211,57 @@ function ProductDetails(props) {
                                     color={'white'}
                                     mt={'0.5'}
                                 >
-                                    Category
+                                    Email
+                                </FormLabel>
+                            </Skeleton>
+                            <Skeleton
+                                isLoaded={isLoaded}
+                            >
+                                <Input
+                                    size={'xs'}
+                                    color={'black'}
+                                    bg={'white'}
+                                    variant={'outline'}
+                                    type='email'
+                                    letterSpacing={'tight'}
+                                    placeholder='Enter User Email'
+                                    onChange={(e) => setEmail(e.target.value)}
+                                />
+                            </Skeleton>
+                        </FormControl>
+                        <FormControl>
+                            <Skeleton
+                                isLoaded={isLoaded}
+                                w={'max-content'}
+                            >
+                                <FormLabel
+                                    fontSize={'sm'}
+                                    color={'white'}
+                                    mt={'0.5'}
+                                >
+                                    Role
                                 </FormLabel>
                             </Skeleton>
                             <Skeleton
                                 isLoaded={isLoaded}
                             >
                                 <Select
-                                    placeholder='Select Category'
+                                    placeholder='Select User Role'
                                     size={'xs'}
                                     variant={'outline'}
                                     color={'black'}
                                     bg={'white'}
-                                    defaultValue={category}
-                                    onChange={(e) => setCategory(e.target.value)}
+                                    onChange={(e) => {
+                                        setRoleId(parseInt(e.target.value))
+                                    }}
                                 >
                                     {
-                                        categoryList.map((category) => (
+                                        roleList.map((role) => (
                                             <option
-                                                key={category.id}
-                                                value={category.id}
+                                                key={role.id}
+                                                value={role.id}
                                             >
-                                                {category?.category}
+                                                {role?.role}
                                             </option>
                                         ))
                                     }
@@ -318,23 +278,35 @@ function ProductDetails(props) {
                                     color={'white'}
                                     mt={'0.5'}
                                 >
-                                    Stock
+                                    Password
                                 </FormLabel>
                             </Skeleton>
                             <Skeleton
                                 isLoaded={isLoaded}
                             >
-                                <Input
+                                <InputGroup
                                     size={'xs'}
-                                    color={'black'}
-                                    bg={'white'}
-                                    variant={'outline'}
-                                    type='number'
-                                    letterSpacing={'tight'}
-                                    placeholder='Product Stock'
-                                    value={stock}
-                                    onChange={(e) => setStock(e.target.value)}
-                                />
+                                >
+                                    <Input
+                                        color={'black'}
+                                        bg={'white'}
+                                        variant={'outline'}
+                                        type={visible}
+                                        letterSpacing={'tight'}
+                                        placeholder='Enter password'
+                                        onChange={(e) => setPassword(e.target.value)}
+                                    />
+                                    <InputRightAddon
+                                        onClick={handleVisible}
+                                    >
+                                        {
+                                            visible == 'password' ?
+                                            <AiFillEyeInvisible/>
+                                            :
+                                            <AiFillEye/>
+                                        }
+                                    </InputRightAddon>
+                                </InputGroup>
                             </Skeleton>
                         </FormControl>
                         <FormControl>
@@ -347,23 +319,35 @@ function ProductDetails(props) {
                                     color={'white'}
                                     mt={'0.5'}
                                 >
-                                    Price
+                                    Confirmation Password
                                 </FormLabel>
                             </Skeleton>
                             <Skeleton
                                 isLoaded={isLoaded}
                             >
-                                <Input
+                                <InputGroup
                                     size={'xs'}
-                                    color={'black'}
-                                    bg={'white'}
-                                    variant={'outline'}
-                                    type='number'
-                                    letterSpacing={'tight'}
-                                    placeholder='Product Price'
-                                    value={price}
-                                    onChange={(e) => setPrice(e.target.value)}
-                                />
+                                >
+                                    <Input
+                                        color={'black'}
+                                        bg={'white'}
+                                        variant={'outline'}
+                                        type={visible}
+                                        letterSpacing={'tight'}
+                                        placeholder='Enter Confirmation Password'
+                                        onChange={(e) => setConfirmationPassword(e.target.value)}
+                                    />      
+                                    <InputRightAddon
+                                        onClick={handleVisible}
+                                    >
+                                        {
+                                            visible == 'password' ?
+                                            <AiFillEyeInvisible/>
+                                            :
+                                            <AiFillEye/>
+                                        }
+                                    </InputRightAddon>
+                                </InputGroup>
                             </Skeleton>
                         </FormControl>
                     </Box>
@@ -389,7 +373,9 @@ function ProductDetails(props) {
                                     size={'sm'}
                                     colorScheme={'red'}
                                     color={'white'}
-                                    onClick={() => props.handleCloseComponent()}
+                                    onClick={() => {
+                                        handleClose();
+                                    }}
                                 >
                                     Close
                                 </Button>
@@ -408,9 +394,9 @@ function ProductDetails(props) {
                                     color={'white'}
                                     isLoading={loading}
                                     spinner={<PulseLoader size={8} color='white' />}
-                                    onClick={onBtnEdit}
+                                    onClick={onBtnCreate}
                                 >
-                                    Save
+                                    Create
                                 </Button>
                             </Skeleton>
                         </Flex>
@@ -421,4 +407,4 @@ function ProductDetails(props) {
      );
 }
 
-export default ProductDetails;
+export default AddUser;

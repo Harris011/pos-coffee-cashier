@@ -151,7 +151,6 @@ function AddProduct(props) {
         }
     }
 
-
     useEffect(() => {
         getCategory();
     }, []);

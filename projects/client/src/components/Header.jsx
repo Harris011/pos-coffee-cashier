@@ -62,16 +62,27 @@ function Header(props) {
                 <Flex
                     flexDir={'column'}
                     alignItems={'start'}
+                    w={'50%'}
                 >
                     <Skeleton
                         isLoaded={isLoaded}
+                        w={'100%'}
                     >
-                        <Text
-                            fontWeight={'semibold'}
-                            fontSize={'xl'}
+                        <Box
+                            w={'100%'}
                         >
-                            Welcome, {name}
-                        </Text>
+                            <Text
+                                textAlign={'start'}
+                                fontWeight={'semibold'}
+                                fontSize={'xl'}
+                                overflow={'hidden'}
+                                whiteSpace={'nowrap'}
+                                textOverflow={'ellipsis'}
+                                display={'block'}
+                            >
+                                Welcome, {name}
+                            </Text>
+                        </Box>
                     </Skeleton>
                     <Skeleton
                         isLoaded={isLoaded}

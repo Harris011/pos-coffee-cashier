@@ -84,8 +84,16 @@ function Login() {
             }
 
         } catch (error) {
-            setLoading(false);
             console.log(error);
+            toast({
+                position: 'top',
+                title: 'Login',
+                description: error.response.data.message,
+                status:'error',
+                duration: 2000,
+                isClosable: true
+            })
+            setLoading(false);
         }
     }
 
