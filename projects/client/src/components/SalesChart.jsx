@@ -252,7 +252,7 @@ function SalesChart() {
                         alignItems={'center'}
                         gap={'2'}
                     >
-                        {/* <Skeleton
+                        <Skeleton
                             isLoaded={isLoaded}
                         >
                             <Input
@@ -262,8 +262,8 @@ function SalesChart() {
                                 id='startDateInput'
                                 onChange={(e) => setStartDate(e.target.value)}
                             />
-                        </Skeleton> */}
-                        {/* <Skeleton
+                        </Skeleton>
+                        <Skeleton
                             isLoaded={isLoaded}
                         >
                             <Input
@@ -273,9 +273,9 @@ function SalesChart() {
                                 id='endDateInput'
                                 onChange={(e) => setEndDate(e.target.value)}
                             />
-                        </Skeleton> */}
+                        </Skeleton>
                         <Flex>
-                            {/* <Skeleton
+                            <Skeleton
                                 isLoaded={isLoaded}
                             >
                                 <Button
@@ -286,10 +286,10 @@ function SalesChart() {
                                 >
                                     Search
                                 </Button>
-                            </Skeleton> */}
+                            </Skeleton>
                         </Flex>
                         <Flex>
-                            {/* <Skeleton
+                            <Skeleton
                                 isLoaded={isLoaded}
                             >
                                 <Button
@@ -300,7 +300,7 @@ function SalesChart() {
                                 >
                                     Clear
                                 </Button>
-                            </Skeleton> */}
+                            </Skeleton>
                         </Flex>
                     </Flex>
                 </Flex>
