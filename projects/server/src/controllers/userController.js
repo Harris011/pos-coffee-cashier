@@ -30,6 +30,7 @@ module.exports = {
                     if (check) {
                         getUser[0].dataValues.role = getUser[0].dataValues.role.role;
                         let {
+                            id,
                             uuid,
                             email,
                             username,
@@ -38,12 +39,13 @@ module.exports = {
                         } = getUser[0].dataValues;
 
                         // generate token
-                        let token = createToken({uuid, role_id}, '24h');
+                        let token = createToken({id, uuid, role_id}, '24h');
 
                         return res.status(200).send({
                             success: true,
                             message: 'Login Success',
-                            uuid: uuid,
+                            // id: id,
+                            // uuid: uuid,
                             email: email,
                             username: username,
                             role_id: role_id,
@@ -89,6 +91,7 @@ module.exports = {
 
             getUser[0].dataValues.role = getUser[0].dataValues.role.role;
             let {
+                id,
                 uuid,
                 email,
                 username,
@@ -97,10 +100,12 @@ module.exports = {
             } = getUser[0].dataValues;
 
             // generate token
-            let token = createToken({uuid, role_id}, '24h');
+            let token = createToken({id, uuid, role_id}, '24h');
             return res.status(200).send({
                 success: true,
                 message: 'Keep login Success',
+                // id: id,
+                // uuid: uuid,
                 email: email,
                 username: username,
                 role_id: role_id,

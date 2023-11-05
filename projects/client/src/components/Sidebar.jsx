@@ -14,7 +14,8 @@ import { GiCoffeeBeans } from 'react-icons/gi';
 import { BsBoxes } from 'react-icons/bs';
 import { BiCategoryAlt } from 'react-icons/bi';
 import { IoIosPeople } from 'react-icons/io';
-import { FaRegChartBar } from 'react-icons/fa';
+// import { FaRegChartBar } from 'react-icons/fa';
+import { FaMoneyBillTransfer } from 'react-icons/fa6';
 import { FiLogOut } from 'react-icons/fi';
 import { logoutAction } from '../Reducers/authUser';
 import { useDispatch } from 'react-redux';
@@ -80,6 +81,31 @@ function SideBar() {
                         h={'82vh'}
                         pt={'2'}
                     >
+                        <Link
+                            onClick={() => navigate('/dashboards')}
+                        >
+                            <Skeleton
+                                isLoaded={isLoaded}
+                                fitContent='true'
+                            >
+                                <Tooltip
+                                    label={'Dashboards'}
+                                    hasArrow
+                                    bg={'white'}
+                                    color={'black'}
+                                    placement={'right'}
+                                    closeOnClick={false}
+                                >
+                                    <IconButton
+                                        icon={<AiFillHome size={'25px'} />}
+                                        size={'sm'}
+                                        variant={'unstyled'}
+                                        color={'white'}
+                                        px={'1'}
+                                    />
+                                </Tooltip>
+                            </Skeleton>
+                        </Link>
                         <Link
                             onClick={() => navigate('/dashboard')}
                         >
@@ -188,7 +214,7 @@ function SideBar() {
                                 fitContent='true'
                             >
                                 <Tooltip
-                                    label={'Report'}
+                                    label={'Transaction'}
                                     hasArrow
                                     bg={'white'}
                                     color={'black'}
@@ -196,7 +222,7 @@ function SideBar() {
                                     closeOnClick={false}
                                 >
                                     <IconButton
-                                        icon={<FaRegChartBar size={'25px'} />}
+                                        icon={<FaMoneyBillTransfer size={'25px'} />}
                                         size={'sm'}
                                         variant={'unstyled'}
                                         color={'white'}
