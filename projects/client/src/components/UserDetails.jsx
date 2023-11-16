@@ -38,7 +38,7 @@ function UserDetails(props) {
             if (!token) {
                 return toast({
                     position: 'top',
-                    title: 'Edit product',
+                    title: 'User Update',
                     description: 'unauthorized access',
                     duration: 2000,
                     isClosable: true
@@ -47,7 +47,7 @@ function UserDetails(props) {
             if (email == '' || username == '' || roleId == '') {
                 return toast({
                     position: 'top',
-                    title: 'Edit product',
+                    title: 'User Update',
                     description: 'Please complete all required fields',
                     status: 'warning',
                     duration: 2000,
@@ -67,7 +67,7 @@ function UserDetails(props) {
             if (response.data.success == true) {
                 toast({
                     position: 'top',
-                    title: 'User update',
+                    title: 'User Update',
                     description: response.data.message,
                     status: 'success',
                     duration: 2000,
@@ -81,7 +81,7 @@ function UserDetails(props) {
             } else {
                 toast({
                     position: 'top',
-                    title: 'User update',
+                    title: 'User Update',
                     description: response.data.message,
                     status: 'success',
                     duration: 2000,
@@ -94,7 +94,7 @@ function UserDetails(props) {
             setTimeout(() => {
                 toast({
                     position: 'top',
-                    title: 'Create new category',
+                    title: 'User Update',
                     description: error.response.data.message,
                     status: 'error',
                     duration: 2000,
