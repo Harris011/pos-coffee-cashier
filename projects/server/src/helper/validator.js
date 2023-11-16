@@ -18,7 +18,7 @@ module.exports = {
                 .withMessage("Username can not be empty")
                 .isLength({max: 100})
                 .withMessage("Username must not exceed 100 characters.")
-                .isAlphanumeric()
+                .matches(/^[a-zA-Z0-9\s]+$/)
                 .run(req);
 
                 await check("password")
@@ -132,7 +132,7 @@ module.exports = {
             .withMessage("Username can not be empty")
             .isLength({max: 100})
             .withMessage("Username must not exceed 100 characters.")
-            .isAlphanumeric()
+            .matches(/^[a-zA-Z0-9\s]+$/)
             .run(req)
 
             await check("role_id")
